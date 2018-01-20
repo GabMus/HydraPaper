@@ -10,9 +10,6 @@ class Monitor:
         self.width = int(width)
         self.height = int(height)
         self.primary = primary
-        if self.primary:
-            self.offset_x = 0
-            self.offset_y = 0
         self.offset_x = int(offset_x)
         self.offset_y = int(offset_y)
 
