@@ -1,0 +1,28 @@
+Source: hydrapaper
+Section: gnome
+Priority: optional
+Maintainer: Gabriele Musco <emaildigabry@gmail.com>
+Homepage: https://github.com/GabMus/hydrapaper
+Standards-Version: 4.1.0
+X-Python3-Version: >= 3.4
+Build-Depends:
+ debhelper (>= 9),
+ dh-python,
+ gettext,
+ libappstream-glib-dev,
+ meson (>= 0.40.0),
+ pkg-config,
+ python3-all
+
+Package: razercommander
+Architecture: all
+Depends:
+ gir1.2-gtk-3.0 (>= 3.14.0),
+ python3-gi (>= 3.14.0)
+Recommends:
+ ${misc:Depends},
+ ${python3:Depends}
+Description: Wallpaper manager with multimonitor support for GNOME
+ Hydrapaper lets you set different wallpapers for each of your monitors in the
+ GNOME desktop. It uses Imagemagick to create a single image merging all of your
+ chosen wallpapers and setting it as your wallpaper with the "Spanned" option.

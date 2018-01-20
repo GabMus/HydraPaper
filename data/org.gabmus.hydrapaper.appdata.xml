@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+    <id>org.gabmus.hydrapaper.desktop</id>
+    <!-- <translation type="gettext">trg</translation> -->
+    <name>HydraPaper</name>
+    <developer_name>Gabriele Musco</developer_name>
+    <summary>Wallpaper manager with multimonitor support for GNOME</summary>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0+</project_license>
+    <description>
+        <p>Hydrapaper lets you set different wallpapers for each of your monitors in the GNOME desktop.</p>
+        <p>It uses Imagemagick to create a single image merging all of your chosen wallpapers and setting it as your wallpaper with the "Spanned" option.</p>
+    </description>
+    <screenshots>
+        <screenshot type="default">
+            <image>https://raw.githubusercontent.com/GabMus/hydrapaper/master/screenshot.png</image>
+        </screenshot>
+    </screenshots>
+    <url type="homepage">https://github.com/GabMus/hydrapaper</url>
+    <url type="bugtracker">https://github.com/GabMus/hydrapaper/issues</url>
+    <update_contact>emaildigabry@gmail.com</update_contact>
+    <releases>
+        <release version="1.0" timestamp="1513452238">
+            <description>
+                <ul>
+                    <li>First flatpak release</li>
+                </ul>
+            </description>
+        </release>
+    </releases>
+</component>

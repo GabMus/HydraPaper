@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gabmus.hydrapaper
+Exec=@bindir@/hydrapaper --gapplication-service

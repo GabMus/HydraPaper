@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=HydraPaper
+# TODO: We could include the full path here but Meson requires
+#       newer GLib to generate files for GResource
+TryExec=hydrapaper
+Exec=hydrapaper --gapplication-service
+Type=Application
+NoDisplay=true
+Name[en_US]=org.gabmus.hydrapaper.service.desktop

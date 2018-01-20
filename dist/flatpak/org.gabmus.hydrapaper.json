@@ -1,0 +1,77 @@
+{
+    "app-id": "org.gabmus.hydrapaper",
+    "command": "hydrapaper",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.26",
+    "sdk": "org.gnome.Sdk",
+    "command": "hydrapaper",
+    "finish-args": [
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--socket=system-bus",
+        "--share=network",
+
+        "--talk-name=org.gnome.SettingsDaemon",
+
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:ro",
+        "--filesystem=~/.config/hydrapaper:rw",
+        "--filesystem=~/.config:rw",
+        "--talk-name=ca.desrt.dconf",
+
+        "--env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"
+    ],
+    "modules": [
+        {
+            "name": "hydrapaper",
+            "buildsystem": "meson",
+            "builddir": true,
+            "sources": [{
+                "type": "archive",
+                "url": "https://github.com/GabMus/hydrapaper/archive/1.0.tar.gz",
+                "sha256": "todefine"
+            }]
+        },
+        {
+            "name": "python-dbus",
+            "make-install-args": ["prefix=/app"],
+            "config-opts": ["prefix=/app"],
+            "make-args": ["prefix=/app"],
+            "build-options": {
+                "env": {
+                    "PYTHON": "python3"
+                }
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.4.tar.gz",
+                    "sha256": "e2f1d6871f74fba23652e51d10873e54f71adab0525833c19bad9e99b1b2f9cc"
+                }
+            ]
+        },
+        {
+            "name": "python-numpy",
+            "buildsystem": "simple",
+            "ensure-writable": [
+                "/lib/python*/site-packages/easy-install.pth",
+                "/lib/python*/site-packages/setuptools.pth",
+                "/app/lib/python*/site-packages/easy-install.pth",
+                "/app/lib/python*/site-packages/setuptools.pth"
+            ],
+            "build-commands": [
+                "python3 setup.py build",
+                "python3 setup.py install --prefix=/app"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/numpy/numpy/releases/download/v1.13.3/numpy-1.13.3.tar.gz",
+                    "sha256": "4c6b4eef790528bebb7ec9590d74cc193868940fe68e4109a91c196df72d8094"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=HydraPaper
+Comment=Wallpaper manager with multimonitor support for GNOME
+Exec=@bindir@/hydrapaper %U
+Icon=org.gabmus.hydrapaper
+Terminal=false
+Type=Application
+StartupNotify=true
+MimeType=
+Categories=Utility;GTK;GNOME;
+Keywords=wallpaper;background;monitor;
