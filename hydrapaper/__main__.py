@@ -18,6 +18,7 @@
 import sys
 import os
 import pathlib
+import json
 
 import argparse
 import gi
@@ -27,6 +28,7 @@ from gi.repository import Gtk, Gdk, Gio, GdkPixbuf
 from . import monitor_parser as MonitorParser
 from . import wallpaper_merger as WallpaperMerger
 from . import threading_helper as ThreadingHelper
+from . import listbox_helper as ListboxHelper
 
 import hashlib # for pseudo-random wallpaper name generation
 
@@ -52,6 +54,10 @@ class Application(Gtk.Application):
         )
         self.RESOURCE_PATH = '/org/gabmus/hydrapaper/'
 
+        self.CONFIG_FILE_PATH = '{0}/.config/hydrapaper.json'.format(HOME)
+
+        self.configuration = self.get_config_file()
+
         self.builder.connect_signals(self)
 
         settings = Gtk.Settings.get_default()
@@ -68,11 +74,54 @@ class Application(Gtk.Application):
 
         # This is a list of Monitor objects
         self.monitors = MonitorParser.build_monitors_from_dict()
-
-        self.wallpapers_paths = [
-            '{0}/Pictures'.format(HOME)
-        ]
         self.wallpapers_list = []
+
+        self.wallpapers_folders_toggle = self.builder.get_object('wallpapersFoldersToggle')
+        self.wallpapers_folders_popover = self.builder.get_object('wallpapersFoldersPopover')
+        self.wallpapers_folders_popover_listbox = self.builder.get_object('wallpapersFoldersPopoverListbox')
+
+    def save_config_file(self, n_config=None):
+        if not n_config:
+            n_config = self.configuration
+        with open(self.CONFIG_FILE_PATH, 'w') as fd:
+            fd.write(json.dumps(n_config))
+            fd.close()
+
+    def get_config_file(self):
+        if not os.path.isfile(self.CONFIG_FILE_PATH):
+            n_config = {
+                'wallpapers_paths': [
+                    '{0}/Pictures'.format(HOME),
+                    '/usr/share/backgrounds/gnome/'
+                ]
+            }
+            self.save_config_file(n_config)
+            return n_config
+        else:
+            with open(self.CONFIG_FILE_PATH, 'r') as fd:
+                config = json.loads(fd.read())
+                fd.close()
+                return config
+
+    def remove_wallpaper_folder(self, btn):
+        # btn.value contains the path to remove
+        self.configuration['wallpapers_paths'].pop(
+            self.configuration['wallpapers_paths'].index(btn.value)
+        )
+        self.save_config_file()
+        self.fill_wallpapers_folders_popover_listbox()
+        self.refresh_wallpapers_flowbox()
+
+    def fill_wallpapers_folders_popover_listbox(self):
+        ListboxHelper.empty_listbox(self.wallpapers_folders_popover_listbox)
+        for path in self.configuration['wallpapers_paths']:
+            self.wallpapers_folders_popover_listbox.add(
+                ListboxHelper.make_label_button_row(
+                    path,
+                    'Remove',
+                    self.remove_wallpaper_folder)
+            )
+        self.wallpapers_folders_popover_listbox.show_all()
 
     def set_monitor_wallpaper_preview(self, wp_path):
         monitor_widgets = self.monitors_flowbox.get_selected_children()[0].get_children()[0].get_children()
@@ -139,16 +188,32 @@ class Application(Gtk.Application):
             self.wallpapers_flowbox.show_all()
 
     def get_wallpapers_list(self, *args):
-        for path in self.wallpapers_paths:
-            pictures = os.listdir('{0}'.format(path))
-            for pic in pictures:
-                if pathlib.Path(pic).suffix.lower() not in IMAGE_EXTENSIONS:
-                    pictures.pop(pictures.index(pic))
-            self.wallpapers_list.extend(['{0}/'.format(path) + pic for pic in pictures])
+        for path in self.configuration['wallpapers_paths']:
+            if os.path.isdir(path):
+                pictures = os.listdir(path)
+                for pic in pictures:
+                    if pathlib.Path(pic).suffix.lower() not in IMAGE_EXTENSIONS:
+                        pictures.pop(pictures.index(pic))
+                self.wallpapers_list.extend(['{0}/'.format(path) + pic for pic in pictures])
 
     def init_wallpapers(self, nothing): # Threading wants args to be passed to the function. I will pass something unimportant
         self.get_wallpapers_list()
         self.fill_wallpapers_flowbox()
+
+    def empty_wallpapers_flowbox(self):
+        self.wallpapers_list = []
+        while True:
+            item = self.wallpapers_flowbox.get_child_at_index(0)
+            if item:
+                self.wallpapers_flowbox.remove(item)
+            else:
+                break
+
+    def refresh_wallpapers_flowbox(self):
+        self.empty_wallpapers_flowbox()
+        get_wallpapers_thread = ThreadingHelper.do_async(self.get_wallpapers_list, (0,))
+        ThreadingHelper.wait_for_thread(get_wallpapers_thread)
+        self.fill_wallpapers_flowbox_async()
 
     def do_activate(self):
         self.add_window(self.window)
@@ -171,12 +236,12 @@ class Application(Gtk.Application):
         self.set_app_menu(appMenu)
 
         self.fill_monitors_flowbox()
+        self.fill_wallpapers_folders_popover_listbox()
 
         self.window.show_all()
 
-        get_wallpapers_thread = ThreadingHelper.do_async(self.get_wallpapers_list, (0,))
-        ThreadingHelper.wait_for_thread(get_wallpapers_thread)
-        self.fill_wallpapers_flowbox_async()
+        self.refresh_wallpapers_flowbox()
+
 
     def run_startup_async_operations(self):
         init_wp_thread = ThreadingHelper.do_async(self.init_wallpapers, (0,))
@@ -262,6 +327,23 @@ class Application(Gtk.Application):
         self.monitors_flowbox.set_sensitive(True)
         self.wallpapers_flowbox.set_sensitive(True)
         self.apply_spinner.stop()
+
+    def on_wallpapersFoldersToggle_toggled(self, toggle):
+        if toggle.get_active():
+            self.wallpapers_folders_popover.popup()
+        else:
+            self.wallpapers_folders_popover.popdown()
+
+    def on_wallpapersFoldersPopover_closed(self, popover):
+        self.wallpapers_folders_toggle.set_active(False)
+
+    def on_newWallpapersFolderFileChooserButton_file_set(self, filechooser_btn):
+        self.configuration['wallpapers_paths'].append(filechooser_btn.get_filename())
+        self.save_config_file()
+        filechooser_btn.unselect_all()
+        self.fill_wallpapers_folders_popover_listbox()
+        self.refresh_wallpapers_flowbox()
+
 
     # Handler functions END
 
