@@ -98,7 +98,7 @@ class Application(Gtk.Application):
         box.set_margin_right(24)
         return box
 
-    def make_wallpapers_flowbox_item(self, wp_path):
+    def make_wallpapers_flowbox_item(self, wp_path, return_widget_pointer=-1):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         wp_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, 250, 250, True)
         image = Gtk.Image.new_from_pixbuf(wp_pixbuf)
@@ -106,6 +106,8 @@ class Application(Gtk.Application):
         box.set_margin_left(12)
         box.set_margin_right(12)
         box.wallpaper_path = wp_path
+        if type(return_widget_pointer) == list:
+            return_widget_pointer.append(box)
         return box
 
     def fill_monitors_flowbox(self):
@@ -122,7 +124,21 @@ class Application(Gtk.Application):
             -1) # -1 appends to the end
             # widget.show_all()
 
-    def get_wallpapers_list(self):
+    def fill_wallpapers_flowbox_async(self):
+        for w in self.wallpapers_list:
+            widget = [] # workaround: passing widget as a list to pass its reference
+            widget_thread = ThreadingHelper.do_async(
+                self.make_wallpapers_flowbox_item,
+                (w, widget)
+            )
+            ThreadingHelper.wait_for_thread(widget_thread)
+            self.wallpapers_flowbox.insert(
+                widget[0],
+            -1) # -1 appends to the end
+            widget[0].show_all()
+            self.wallpapers_flowbox.show_all()
+
+    def get_wallpapers_list(self, *args):
         for path in self.wallpapers_paths:
             pictures = os.listdir('{0}'.format(path))
             for pic in pictures:
@@ -158,6 +174,10 @@ class Application(Gtk.Application):
 
         self.window.show_all()
 
+        get_wallpapers_thread = ThreadingHelper.do_async(self.get_wallpapers_list, (0,))
+        ThreadingHelper.wait_for_thread(get_wallpapers_thread)
+        self.fill_wallpapers_flowbox_async()
+
     def run_startup_async_operations(self):
         init_wp_thread = ThreadingHelper.do_async(self.init_wallpapers, (0,))
         ThreadingHelper.wait_for_thread(init_wp_thread)
@@ -178,7 +198,6 @@ class Application(Gtk.Application):
         self.args = parser.parse_args(args.get_arguments()[1:])
         # call the main program do_activate() to start up the app
         self.do_activate()
-        self.run_startup_async_operations()
         return 0
 
     def on_about_activate(self, *args):
