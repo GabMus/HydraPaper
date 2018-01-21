@@ -299,16 +299,8 @@ class Application(Gtk.Application):
             'HydraPaper{0}{1}'.format(self.monitors[0].wallpaper, self.monitors[1].wallpaper).encode()
         ).hexdigest())
         WallpaperMerger.multi_setup_standalone(
-            self.monitors[0].width,
-            self.monitors[0].height,
-            self.monitors[1].width,
-            self.monitors[1].height,
-            self.monitors[0].wallpaper,
-            self.monitors[1].wallpaper,
-            self.monitors[0].offset_x,
-            self.monitors[0].offset_y,
-            self.monitors[1].offset_x,
-            self.monitors[1].offset_y,
+            self.monitors[0],
+            self.monitors[1],
             saved_wp_path
         )
         WallpaperMerger.set_wallpaper(saved_wp_path)

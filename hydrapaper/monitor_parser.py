@@ -28,7 +28,7 @@ def build_monitors_from_dict(path_to_monitors_xml='{0}{1}'.format(HOME, MONITORS
     lm_list = doc['monitors']['configuration'][-1]['logicalmonitor']
     monitors = []
     index = 1
-    if type(json.loads(json.dumps(lm_list))) == list:
+    if type(json.loads(json.dumps(lm_list))) == list: # TODO: find a better way to convert ordered dict to dict or list
         for lm in lm_list:
             monitors.append(Monitor(
                 lm['monitor']['mode']['width'],
