@@ -30,6 +30,8 @@ Author: Gabriele Musco
   <object class="GtkApplicationWindow" id="window">
     <property name="height_request">400</property>
     <property name="can_focus">False</property>
+    <property name="default_width">1920</property>
+    <property name="default_height">1080</property>
     <property name="show_menubar">False</property>
     <signal name="destroy" handler="onDeleteWindow" swapped="no"/>
     <signal name="destroy-event" handler="onDeleteWindow" swapped="no"/>
@@ -103,9 +105,6 @@ Author: Gabriele Musco
           <placeholder/>
         </child>
         <child>
-          <placeholder/>
-        </child>
-        <child>
           <object class="GtkButton" id="applyButton">
             <property name="label">gtk-apply</property>
             <property name="visible">True</property>
@@ -116,6 +115,17 @@ Author: Gabriele Musco
             <style>
               <class name="suggested-action"/>
             </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="applySpinner">
+            <property name="width_request">32</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="pack_type">end</property>
@@ -133,7 +143,7 @@ Author: Gabriele Musco
     <property name="program_name">HydraPaper</property>
     <property name="version">1.0</property>
     <property name="website">https://github.com/gabmus/hydrapaper</property>
-    <property name="authors">Gabriele Musco aka GabMus (frontend)</property>
+    <property name="authors">Gabriele Musco (GabMus)</property>
     <property name="logo_icon_name">org.gabmus.hydrapaper</property>
     <property name="license_type">gpl-3-0</property>
     <signal name="close" handler="on_aboutdialog_close" swapped="no"/>

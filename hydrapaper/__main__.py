@@ -26,6 +26,7 @@ from gi.repository import Gtk, Gdk, Gio, GdkPixbuf
 
 from . import monitor_parser as MonitorParser
 from . import wallpaper_merger as WallpaperMerger
+from . import threading_helper as ThreadingHelper
 
 import hashlib # for pseudo-random wallpaper name generation
 
@@ -60,6 +61,7 @@ class Application(Gtk.Application):
 
         self.mainBox = self.builder.get_object('mainBox')
         self.apply_button = self.builder.get_object('applyButton')
+        self.apply_spinner = self.builder.get_object('applySpinner')
 
         self.monitors_flowbox = self.builder.get_object('monitorsFlowbox')
         self.wallpapers_flowbox = self.builder.get_object('wallpapersFlowbox')
@@ -114,9 +116,11 @@ class Application(Gtk.Application):
 
     def fill_wallpapers_flowbox(self):
         for w in self.wallpapers_list:
+            widget = self.make_wallpapers_flowbox_item(w)
             self.wallpapers_flowbox.insert(
-                self.make_wallpapers_flowbox_item(w),
+                widget,
             -1) # -1 appends to the end
+            # widget.show_all()
 
     def get_wallpapers_list(self):
         for path in self.wallpapers_paths:
@@ -125,6 +129,10 @@ class Application(Gtk.Application):
                 if pathlib.Path(pic).suffix.lower() not in IMAGE_EXTENSIONS:
                     pictures.pop(pictures.index(pic))
             self.wallpapers_list.extend(['{0}/'.format(path) + pic for pic in pictures])
+
+    def init_wallpapers(self, nothing): # Threading wants args to be passed to the function. I will pass something unimportant
+        self.get_wallpapers_list()
+        self.fill_wallpapers_flowbox()
 
     def do_activate(self):
         self.add_window(self.window)
@@ -148,10 +156,12 @@ class Application(Gtk.Application):
 
         self.fill_monitors_flowbox()
 
-        self.get_wallpapers_list()
-        self.fill_wallpapers_flowbox() # TODO: do this in a separate thread, it takes too long
-
         self.window.show_all()
+
+    def run_startup_async_operations(self):
+        init_wp_thread = ThreadingHelper.do_async(self.init_wallpapers, (0,))
+        ThreadingHelper.wait_for_thread(init_wp_thread)
+        self.wallpapers_flowbox.show_all()
 
     def do_command_line(self, args):
         """
@@ -168,6 +178,7 @@ class Application(Gtk.Application):
         self.args = parser.parse_args(args.get_arguments()[1:])
         # call the main program do_activate() to start up the app
         self.do_activate()
+        self.run_startup_async_operations()
         return 0
 
     def on_about_activate(self, *args):
@@ -189,7 +200,7 @@ class Application(Gtk.Application):
             selected_item.get_child().wallpaper_path
         )
 
-    def on_applyButton_clicked(self, btn):
+    def apply_button_async_handler(self, btn):
         if len(self.monitors)!=2:
             print('Configurations different from 2 monitors are not supported for now :(')
             exit(1)
@@ -215,6 +226,23 @@ class Application(Gtk.Application):
             saved_wp_path
         )
         WallpaperMerger.set_wallpaper(saved_wp_path)
+
+    def on_applyButton_clicked(self, btn):
+        # disable interaction
+        self.apply_button.set_sensitive(False)
+        self.monitors_flowbox.set_sensitive(False)
+        self.wallpapers_flowbox.set_sensitive(False)
+        # activate spinner
+        self.apply_spinner.start()
+        # run thread
+        thread = ThreadingHelper.do_async(self.apply_button_async_handler, (btn,))
+        # wait for thread to finish
+        ThreadingHelper.wait_for_thread(thread)
+        # restore interaction and deactivate spinner
+        self.apply_button.set_sensitive(True)
+        self.monitors_flowbox.set_sensitive(True)
+        self.wallpapers_flowbox.set_sensitive(True)
+        self.apply_spinner.stop()
 
     # Handler functions END
 
