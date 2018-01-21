@@ -1,5 +1,6 @@
 from os import environ as env
 import xmltodict
+import json
 
 HOME=env.get('HOME')
 MONITORS_XML_PATH='/.config/monitors.xml'
@@ -24,23 +25,37 @@ def build_monitors_from_dict(path_to_monitors_xml='{0}{1}'.format(HOME, MONITORS
     parsed from ~/.config/monitors.xml"""
     with open(path_to_monitors_xml) as fd:
         doc = xmltodict.parse(fd.read())
-    lm_list = doc['monitors']['configuration'][1]['logicalmonitor']
+    lm_list = doc['monitors']['configuration'][-1]['logicalmonitor']
     monitors = []
     index = 1
-    for lm in lm_list:
+    if type(json.loads(json.dumps(lm_list))) == list:
+        for lm in lm_list:
+            monitors.append(Monitor(
+                lm['monitor']['mode']['width'],
+                lm['monitor']['mode']['height'],
+                lm['x'],
+                lm['y'],
+                index,
+                '{0} - {1}'.format(
+                    lm['monitor']['monitorspec']['vendor'],
+                    lm['monitor']['monitorspec']['connector']
+                ),
+                ('primary' in lm)
+            ))
+            index += 1
+    else:
         monitors.append(Monitor(
-            lm['monitor']['mode']['width'],
-            lm['monitor']['mode']['height'],
-            lm['x'],
-            lm['y'],
-            index,
-            '{0} - {1}'.format(
-                lm['monitor']['monitorspec']['vendor'],
-                lm['monitor']['monitorspec']['connector']
-            ),
-            ('primary' in lm)
-        ))
-        index += 1
+                lm_list['monitor']['mode']['width'],
+                lm_list['monitor']['mode']['height'],
+                lm_list['x'],
+                lm_list['y'],
+                index,
+                '{0} - {1}'.format(
+                    lm_list['monitor']['monitorspec']['vendor'],
+                    lm_list['monitor']['monitorspec']['connector']
+                ),
+                ('primary' in lm_list)
+            ))
     if not monitors[0].primary:
         monitors[0], monitors[1] = monitors[1], monitors[0]
     return monitors

@@ -285,7 +285,9 @@ class Application(Gtk.Application):
         )
 
     def apply_button_async_handler(self, btn):
-        if len(self.monitors)!=2:
+        if len(self.monitors) == 1:
+            WallpaperMerger.set_wallpaper(self.monitors[0].wallpaper)
+        if len(self.monitors) != 2:
             print('Configurations different from 2 monitors are not supported for now :(')
             exit(1)
         if not (self.monitors[0].wallpaper and self.monitors[1].wallpaper):
