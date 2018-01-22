@@ -30,38 +30,24 @@
             "builddir": true,
             "sources": [{
                 "type": "archive",
-                "url": "https://github.com/GabMus/HydraPaper/archive/1.0.tar.gz",
-                "sha256": "cb0a61d47e842a0a9757a7bf0d23c532412516ffadeb4bd6c9a08f5cbeb6d73c"
+                "url": "https://github.com/GabMus/HydraPaper/archive/1.1-testing.tar.gz",
+                "sha256": "e8e4e4abb5706003f8ad3c3adc4670dafbb4227b7a0de6ee82bf67b2a16ca425"
             }]
         },
         {
-            "name": "imagemagick",
+            "name": "python-pillow",
             "buildsystem": "autotools",
-            "builddir": true,
-            "sources": [{
-                "type": "archive",
-                "url": "https://www.imagemagick.org/download/ImageMagick.tar.gz",
-                "sha256": "a37ac4c4371e8651a0c94d17bd83749511d562bbdbc91be8a27b19d4758201fa"
-            }]
-        },
-        {
-            "name": "python-wand",
-            "buildsystem": "simple",
             "ensure-writable": [
                 "/lib/python*/site-packages/easy-install.pth",
                 "/lib/python*/site-packages/setuptools.pth",
                 "/app/lib/python*/site-packages/easy-install.pth",
                 "/app/lib/python*/site-packages/setuptools.pth"
             ],
-            "build-commands": [
-                "python3 setup.py build",
-                "python3 setup.py install --root=/app --optimize=1"
-            ],
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://github.com/dahlia/wand/archive/0.4.4.tar.gz",
-                    "sha256": "d63c6461b8e04a732a70ae033dff6b519910337d4c6f985947172f7fbb325854"
+                    "url": "https://github.com/python-pillow/Pillow/archive/5.0.0.tar.gz",
+                    "sha256": "e85301adaa827b9f29ab518eff99d5719e572ca5f369866ebfe57a92e7135aec"
                 }
             ]
         }
