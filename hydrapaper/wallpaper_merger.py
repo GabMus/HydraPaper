@@ -1,20 +1,41 @@
-from wand.image import Image
 from gi.repository import Gio
+from os.path import isdir
+from os import mkdir
+from PIL import Image
+from PIL.ImageOps import fit
+
+import hashlib # for pseudo-random wallpaper name generation
+
+TMP_DIR='/tmp/HydraPaper/'
+
+def multi_setup_pillow(monitors, save_path):
+    images = list(map(Image.open, [m.wallpaper for m in monitors]))
+    resolutions = [(m.width, m.height) for m in monitors]
+    widths = [r[0] for r in resolutions]
+    heights = [r[1] for r in resolutions]
+    offsets = [(m.offset_x, m.offset_y) for m in monitors]
+    n_images = []
+    for i, r in zip(images, resolutions):
+        n_images.append(fit(i, r, method=Image.LANCZOS))
+    final_image = Image.new('RGB', (sum(widths), max(heights)))
+    for i, o in zip(n_images, offsets):
+        final_image.paste(i, o)
+    final_image.save(save_path)
 
 def multi_setup_standalone(m1, m2, save_path):
-    with Image(filename = m1.wallpaper) as img1:
-        with Image(filename = m2.wallpaper) as img2:
-            img1.transform(resize = '{0}x{1}^'.format(m1.width, m1.height))
-            img1.crop(width = m1.width, height = m1.height, gravity = 'center')
-            img2.transform(resize = '{0}x{1}^'.format(m2.width, m2.height))
-            img2.crop(width = m2.width, height = m2.height, gravity = 'center')
-            with Image() as n_img:
-                n_width = img1.width+img2.width
-                n_height = img1.height if img1.height>img2.height else img2.height
-                n_img.blank(n_width, n_height)
-                n_img.composite(left = m1.offset_x, top = m1.offset_y, image = img1)
-                n_img.composite(left = m2.offset_x, top = m2.offset_y, image = img2)
-                n_img.save(filename = save_path)
+
+    return multi_setup_pillow([m1, m2], save_path)
+
+def n_way_setup(monitors_list, save_path):
+    return
+    #if not isdir(TMP_DIR):
+    #    os.mkdir(TMP_DIR)
+
+    # TODO: find the leftmost monitor and make it 0
+    # TODO: start from 0 and iterate proceeding with the closest monitor
+    saved_wp_path = '{0}/{1}.png'.format(TMP_DIR, hashlib.sha256(
+            'HydraPaper{0}{1}'.format(self.monitors[0].wallpaper, self.monitors[1].wallpaper).encode()
+        ).hexdigest())
 
 def set_wallpaper(path):
     gsettings = Gio.Settings.new('org.gnome.desktop.background')
