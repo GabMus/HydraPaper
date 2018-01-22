@@ -18,6 +18,7 @@
         "--filesystem=xdg-run/dconf",
         "--filesystem=~/.config/dconf:ro",
         "--filesystem=~/.config/hydrapaper:rw",
+        "--filesystem=~/.config:rw",
         "--talk-name=ca.desrt.dconf",
 
         "--env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"
