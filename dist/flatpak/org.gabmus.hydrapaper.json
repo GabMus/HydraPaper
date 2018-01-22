@@ -18,7 +18,6 @@
         "--filesystem=xdg-run/dconf",
         "--filesystem=~/.config/dconf:ro",
         "--filesystem=~/.config/hydrapaper:rw",
-        "--filesystem=~/.config:rw",
         "--talk-name=ca.desrt.dconf",
 
         "--env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"
@@ -35,25 +34,17 @@
             }]
         },
         {
-            "name": "python-dbus",
-            "make-install-args": ["prefix=/app"],
-            "config-opts": ["prefix=/app"],
-            "make-args": ["prefix=/app"],
-            "build-options": {
-                "env": {
-                    "PYTHON": "python3"
-                }
-            },
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.2.4.tar.gz",
-                    "sha256": "e2f1d6871f74fba23652e51d10873e54f71adab0525833c19bad9e99b1b2f9cc"
-                }
-            ]
+            "name": "imagemagick",
+            "buildsystem": "autotools",
+            "builddir": true,
+            "sources": [{
+                "type": "archive",
+                "url": "https://www.imagemagick.org/download/ImageMagick.tar.gz",
+                "sha256": "a37ac4c4371e8651a0c94d17bd83749511d562bbdbc91be8a27b19d4758201fa"
+            }]
         },
         {
-            "name": "python-numpy",
+            "name": "python-wand",
             "buildsystem": "simple",
             "ensure-writable": [
                 "/lib/python*/site-packages/easy-install.pth",
@@ -63,13 +54,13 @@
             ],
             "build-commands": [
                 "python3 setup.py build",
-                "python3 setup.py install --prefix=/app"
+                "python3 setup.py install --root=/app --optimize=1"
             ],
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://github.com/numpy/numpy/releases/download/v1.13.3/numpy-1.13.3.tar.gz",
-                    "sha256": "4c6b4eef790528bebb7ec9590d74cc193868940fe68e4109a91c196df72d8094"
+                    "url": "https://github.com/dahlia/wand/archive/0.4.4.tar.gz",
+                    "sha256": "d63c6461b8e04a732a70ae033dff6b519910337d4c6f985947172f7fbb325854"
                 }
             ]
         }
