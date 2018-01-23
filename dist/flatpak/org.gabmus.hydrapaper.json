@@ -30,18 +30,21 @@
             "builddir": true,
             "sources": [{
                 "type": "archive",
-                "url": "https://github.com/GabMus/HydraPaper/archive/1.1-testing.tar.gz",
-                "sha256": "e8e4e4abb5706003f8ad3c3adc4670dafbb4227b7a0de6ee82bf67b2a16ca425"
+                "url": "https://github.com/GabMus/HydraPaper/archive/1.1.tar.gz",
+                "sha256": "857541e91366d8eb3597c48962c04f07dd046fb6e92e97a6c6dc26bf6680de7e"
             }]
         },
         {
             "name": "python-pillow",
-            "buildsystem": "autotools",
+            "buildsystem": "simple",
             "ensure-writable": [
                 "/lib/python*/site-packages/easy-install.pth",
                 "/lib/python*/site-packages/setuptools.pth",
                 "/app/lib/python*/site-packages/easy-install.pth",
                 "/app/lib/python*/site-packages/setuptools.pth"
+            ],
+            "build-commands": [
+                "python3 setup.py install --root=/app"
             ],
             "sources": [
                 {
