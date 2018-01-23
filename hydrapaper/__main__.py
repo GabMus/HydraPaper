@@ -34,6 +34,8 @@ import hashlib # for pseudo-random wallpaper name generation
 
 HOME = os.environ.get('HOME')
 
+HYDRAPAPER_CACHE_PATH = '{0}/.cache/hydrapaper'.format(HOME)
+
 IMAGE_EXTENSIONS = [
     '.jpg',
     '.jpeg',
@@ -79,6 +81,11 @@ class Application(Gtk.Application):
         self.wallpapers_folders_toggle = self.builder.get_object('wallpapersFoldersToggle')
         self.wallpapers_folders_popover = self.builder.get_object('wallpapersFoldersPopover')
         self.wallpapers_folders_popover_listbox = self.builder.get_object('wallpapersFoldersPopoverListbox')
+
+        self.errorDialog = Gtk.MessageDialog()
+        self.errorDialog.add_button('Ok', 0)
+        self.errorDialog.set_default_response(0)
+        self.errorDialog.set_transient_for(self.window)
 
     def save_config_file(self, n_config=None):
         if not n_config:
@@ -298,16 +305,21 @@ class Application(Gtk.Application):
         if len(self.monitors) == 1:
             WallpaperMerger.set_wallpaper(self.monitors[0].wallpaper)
             return
-        if len(self.monitors) != 2:
-            print('Configurations different from 2 monitors are not supported for now :(')
-            exit(1)
+        #if len(self.monitors) != 2:
+        #    print('Configurations different from 2 monitors are not supported for now :(')
+        #    exit(1)
         if not (self.monitors[0].wallpaper and self.monitors[1].wallpaper):
-            print('Set both wallpapers before applying')
+            print('Set all of the wallpapers before applying')
+            self.errorDialog.set_markup('Set all of the wallpapers before applying')
+            self.errorDialog.run()
+            self.errorDialog.hide()
             return
-        if not os.path.isdir('{0}/Pictures/HydraPaper'.format(HOME)):
-            os.mkdir('{0}/Pictures/HydraPaper'.format(HOME))
-        saved_wp_path = '{0}/Pictures/HydraPaper/{1}.png'.format(HOME, hashlib.sha256(
-            'HydraPaper{0}{1}'.format(self.monitors[0].wallpaper, self.monitors[1].wallpaper).encode()
+        if not os.path.isdir(HYDRAPAPER_CACHE_PATH):
+            os.mkdir(HYDRAPAPER_CACHE_PATH)
+        saved_wp_path = '{0}/{1}.png'.format(HYDRAPAPER_CACHE_PATH, hashlib.sha256(
+            'HydraPaper{0}{1}'.format(
+                self.monitors[0].wallpaper, self.monitors[1].wallpaper
+            ).encode()
         ).hexdigest())
         WallpaperMerger.multi_setup_standalone(
             self.monitors[0],
