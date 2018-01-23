@@ -16,7 +16,7 @@ You can find HydraPaper on AUR, as `hydrapaper-git` ([AUR page](https://aur.arch
 
 ### Other distros
 
-HydraPaper is available as a flatpak. [You can download it from here](https://github.com/GabMus/HydraPaper/releases)
+HydraPaper is available as a flatpak. [You can download it from here](https://github.com/GabMus/HydraPaper/releases).
 
 Alternatively ou can either run HydraPaper without installing it (refer to the [Building for testing section](#building-for-testing)), or install it in your system (refer to the [Installing systemwide directly section](#build-and-install-systemwide-directly)).
 

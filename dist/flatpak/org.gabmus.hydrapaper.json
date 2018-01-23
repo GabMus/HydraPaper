@@ -15,10 +15,13 @@
         "--talk-name=org.gnome.SettingsDaemon",
 
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+        "--filesystem=~/:rw",
         "--filesystem=xdg-run/dconf",
         "--filesystem=~/.config/dconf:ro",
         "--filesystem=~/.config/hydrapaper:rw",
         "--filesystem=~/.config:rw",
+        "--filesystem=~/.cache:rw",
+        "--filesystem=~/.cache/hydrapaper:rw",
         "--talk-name=ca.desrt.dconf",
 
         "--env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"
@@ -44,7 +47,7 @@
                 "/app/lib/python*/site-packages/setuptools.pth"
             ],
             "build-commands": [
-                "python3 setup.py install --root=/app --prefix=/app"
+                "python3 setup.py install --prefix=/app"
             ],
             "sources": [
                 {
@@ -64,7 +67,7 @@
                 "/app/lib/python*/site-packages/setuptools.pth"
             ],
             "build-commands": [
-                "python3 setup.py install --root=/app --prefix=/app"
+                "python3 setup.py install --prefix=/app"
             ],
             "sources": [
                 {
