@@ -9,7 +9,7 @@
     <project_license>GPL-3.0+</project_license>
     <description>
         <p>Hydrapaper lets you set different wallpapers for each of your monitors in the GNOME desktop.</p>
-        <p>It uses Imagemagick to create a single image merging all of your chosen wallpapers and setting it as your wallpaper with the "Spanned" option.</p>
+        <p>It uses Pillow to create a single image merging all of your chosen wallpapers and setting it as your wallpaper with the "Spanned" option.</p>
     </description>
     <screenshots>
         <screenshot type="default">
