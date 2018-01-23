@@ -181,11 +181,12 @@ class Application(Gtk.Application):
                 (w, widget)
             )
             ThreadingHelper.wait_for_thread(widget_thread)
-            self.wallpapers_flowbox.insert(
-                widget[0],
-            -1) # -1 appends to the end
-            widget[0].show_all()
-            self.wallpapers_flowbox.show_all()
+            if len(widget) == 1:
+                self.wallpapers_flowbox.insert(
+                    widget[0],
+                -1) # -1 appends to the end
+                widget[0].show_all()
+                self.wallpapers_flowbox.show_all()
 
     def check_if_image(self, pic):
         path = pathlib.Path(pic)
