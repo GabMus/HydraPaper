@@ -6,7 +6,7 @@ A Gtk utility to set two different backgrounds for each monitor on GNOME (which 
 
 ## Requirements
 
-This tool requires `imagemagick` and `python-wand`
+This tool requires `python-pillow` and `python-xmltodict`
 
 ## Installing
 
