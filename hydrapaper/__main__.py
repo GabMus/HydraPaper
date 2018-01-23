@@ -187,12 +187,21 @@ class Application(Gtk.Application):
             widget[0].show_all()
             self.wallpapers_flowbox.show_all()
 
+    def check_if_image(self, pic):
+        path = pathlib.Path(pic)
+        return (
+            path.suffix.lower() in IMAGE_EXTENSIONS and
+            path.exists() and
+            not path.is_dir()
+        )
+
     def get_wallpapers_list(self, *args):
         for path in self.configuration['wallpapers_paths']:
             if os.path.isdir(path):
                 pictures = os.listdir(path)
                 for pic in pictures:
-                    if pathlib.Path(pic).suffix.lower() not in IMAGE_EXTENSIONS:
+                    picpath = '{0}/{1}'.format(path, pic)
+                    if not self.check_if_image(picpath):
                         pictures.pop(pictures.index(pic))
                 self.wallpapers_list.extend(['{0}/'.format(path) + pic for pic in pictures])
 
