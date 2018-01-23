@@ -50,6 +50,26 @@
                     "sha256": "e85301adaa827b9f29ab518eff99d5719e572ca5f369866ebfe57a92e7135aec"
                 }
             ]
+        },
+        {
+            "name": "python-xmltodict",
+            "buildsystem": "simple",
+            "ensure-writable": [
+                "/lib/python*/site-packages/easy-install.pth",
+                "/lib/python*/site-packages/setuptools.pth",
+                "/app/lib/python*/site-packages/easy-install.pth",
+                "/app/lib/python*/site-packages/setuptools.pth"
+            ],
+            "build-commands": [
+                "python3 setup.py install --root=/app"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/martinblech/xmltodict/archive/v0.11.0.tar.gz",
+                    "sha256": "3a346f343970413b8ba2f0b909ed0212fd45f565deba25b838823ccc3be02747"
+                }
+            ]
         }
     ]
 }

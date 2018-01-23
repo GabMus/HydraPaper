@@ -1,5 +1,5 @@
 project('hydrapaper',
-  version: '1.0',
+  version: '1.1',
   meson_version: '>= 0.40.0'
 )
 

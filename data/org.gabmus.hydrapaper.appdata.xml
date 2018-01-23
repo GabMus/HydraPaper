@@ -20,10 +20,17 @@
     <url type="bugtracker">https://github.com/GabMus/hydrapaper/issues</url>
     <update_contact>emaildigabry@gmail.com</update_contact>
     <releases>
+        <release version="1.0" timestamp="1516697993">
+            <description>
+                <ul>
+                    <li>Port to pillow</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.0" timestamp="1516618272">
             <description>
                 <ul>
-                    <li>First flatpak release</li>
+                    <li>First release</li>
                 </ul>
             </description>
         </release>
