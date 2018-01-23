@@ -27,11 +27,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7071068"
-     inkscape:cx="778.07798"
-     inkscape:cy="295.01805"
+     inkscape:zoom="2.0000001"
+     inkscape:cx="166.00683"
+     inkscape:cy="210.3385"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g1146"
      showgrid="false"
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="true"
@@ -79,88 +79,6 @@
          offset="1"
          id="stop4600" />
     </linearGradient>
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4682"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4679"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4676"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4654"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4651"
-       is_visible="true" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4648"
-       is_visible="true" />
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="-191.8101 : 1767.4692 : 1"
-       inkscape:vp_y="0 : 3612.3584 : 0"
-       inkscape:vp_z="2956.2636 : 1767.4692 : 1"
-       inkscape:persp3d-origin="1382.2269 : 1133.8843 : 1"
-       id="perspective4483" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4835"
-       effect="spiro" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4745"
-       effect="spiro" />
-    <marker
-       inkscape:isstock="true"
-       style="overflow:visible"
-       id="Arrow1Lstart"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow1Lstart">
-      <path
-         inkscape:connector-curvature="0"
-         transform="matrix(0.8,0,0,0.8,10,0)"
-         style="fill:#00ff00;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
-         d="M 0,0 5,-5 -12.5,0 5,5 Z"
-         id="path4461" />
-    </marker>
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4224"
-       effect="spiro" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4161"
-       effect="spiro" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4161-4"
-       effect="spiro" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4161-4-5"
-       effect="spiro" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4745-0"
-       effect="spiro" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4745-00"
-       effect="spiro" />
-    <inkscape:path-effect
-       is_visible="true"
-       id="path-effect4161-4-0"
-       effect="spiro" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4602"

@@ -44,7 +44,7 @@
                 "/app/lib/python*/site-packages/setuptools.pth"
             ],
             "build-commands": [
-                "python3 setup.py install --root=/app"
+                "python3 setup.py install --root=/app --prefix=/app"
             ],
             "sources": [
                 {
@@ -64,7 +64,7 @@
                 "/app/lib/python*/site-packages/setuptools.pth"
             ],
             "build-commands": [
-                "python3 setup.py install --root=/app"
+                "python3 setup.py install --root=/app --prefix=/app"
             ],
             "sources": [
                 {
