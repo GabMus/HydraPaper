@@ -321,9 +321,8 @@ class Application(Gtk.Application):
                 self.monitors[0].wallpaper, self.monitors[1].wallpaper
             ).encode()
         ).hexdigest())
-        WallpaperMerger.multi_setup_standalone(
-            self.monitors[0],
-            self.monitors[1],
+        WallpaperMerger.multi_setup_pillow(
+            self.monitors,
             saved_wp_path
         )
         WallpaperMerger.set_wallpaper(saved_wp_path)
