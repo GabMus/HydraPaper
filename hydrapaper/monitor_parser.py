@@ -25,7 +25,10 @@ def build_monitors_from_dict(path_to_monitors_xml='{0}{1}'.format(HOME, MONITORS
     parsed from ~/.config/monitors.xml"""
     with open(path_to_monitors_xml) as fd:
         doc = xmltodict.parse(fd.read())
-    lm_list = doc['monitors']['configuration'][-1]['logicalmonitor']
+    if type(json.loads(json.dumps(doc['monitors']['configuration']))) == list:
+        lm_list = doc['monitors']['configuration'][-1]['logicalmonitor']
+    else:
+        lm_list = doc['monitors']['configuration']['logicalmonitor']
     monitors = []
     index = 1
     if type(json.loads(json.dumps(lm_list))) == list: # TODO: find a better way to convert ordered dict to dict or list
