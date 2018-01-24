@@ -84,19 +84,33 @@ class Application(Gtk.Application):
             self.configuration['selection_mode'] == 'single'
         )
 
+        self.errorDialog = Gtk.MessageDialog()
+        self.errorDialog.add_button('Ok', 0)
+        self.errorDialog.set_default_response(0)
+        self.errorDialog.set_transient_for(self.window)
+
         # This is a list of Monitor objects
         self.monitors = MonitorParser.build_monitors_from_dict()
+        if not self.monitors:
+            self.errorDialog.set_markup(
+                '''
+<b>Oh noes! 😱</b>
+
+There was an error parsing your monitors.xml file.
+That\'s really unfortunate 😿.
+Try going to your GNOME display settings, changing your resolution or monitor arrangement, and changing it back to normal.
+
+Then come back here. If it still doesn\'t work, considering filling an issue <a href="https://github.com/gabmus/hydrapaper/issues">on HydraPaper\'s bugtracker</a>, including the output of `cat ~/.config/monitors.xml`
+                '''
+            )
+            self.errorDialog.run()
+            exit(1)
         self.sync_monitors_from_config()
         self.wallpapers_list = []
 
         self.wallpapers_folders_toggle = self.builder.get_object('wallpapersFoldersToggle')
         self.wallpapers_folders_popover = self.builder.get_object('wallpapersFoldersPopover')
         self.wallpapers_folders_popover_listbox = self.builder.get_object('wallpapersFoldersPopoverListbox')
-
-        self.errorDialog = Gtk.MessageDialog()
-        self.errorDialog.add_button('Ok', 0)
-        self.errorDialog.set_default_response(0)
-        self.errorDialog.set_transient_for(self.window)
 
     def sync_monitors_from_config(self):
         for m in self.monitors:
