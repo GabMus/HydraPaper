@@ -22,10 +22,9 @@ def multi_setup_pillow(monitors, save_path):
         final_image.paste(i, o)
     final_image.save(save_path)
 
-def set_wallpaper(path):
+def set_wallpaper(path, wp_mode='spanned'):
     gsettings = Gio.Settings.new('org.gnome.desktop.background')
     wp_key = 'picture-uri'
     mode_key = 'picture-options'
-    mode_value = 'spanned'
     gsettings.set_string(wp_key, 'file://{}'.format(path))
-    gsettings.set_string(mode_key, mode_value)
+    gsettings.set_string(mode_key, wp_mode)
