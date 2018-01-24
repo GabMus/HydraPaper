@@ -74,6 +74,16 @@ class Application(Gtk.Application):
         self.monitors_flowbox = self.builder.get_object('monitorsFlowbox')
         self.wallpapers_flowbox = self.builder.get_object('wallpapersFlowbox')
 
+        self.wallpaper_selection_mode_toggle = self.builder.get_object('wallpaperSelectionModeToggle')
+
+        self.wallpaper_selection_mode_toggle.set_active(
+            not self.configuration['selection_mode'] == 'single'
+        )
+
+        self.wallpapers_flowbox.set_activate_on_single_click(
+            self.configuration['selection_mode'] == 'single'
+        )
+
         # This is a list of Monitor objects
         self.monitors = MonitorParser.build_monitors_from_dict()
         self.wallpapers_list = []
@@ -100,7 +110,8 @@ class Application(Gtk.Application):
                 'wallpapers_paths': [
                     '{0}/Pictures'.format(HOME),
                     '/usr/share/backgrounds/gnome/'
-                ]
+                ],
+                'selection_mode': 'single'
             }
             self.save_config_file(n_config)
             return n_config
@@ -108,6 +119,15 @@ class Application(Gtk.Application):
             with open(self.CONFIG_FILE_PATH, 'r') as fd:
                 config = json.loads(fd.read())
                 fd.close()
+                if not 'wallpapers_paths' in config.keys():
+                    config['wallpapers_paths'] = [
+                        '{0}/Pictures'.format(HOME),
+                        '/usr/share/backgrounds/gnome/'
+                    ]
+                    self.save_config_file(n_config)
+                if not 'selection_mode' in config.keys():
+                    config['selection_mode'] = 'single'
+                    self.save_config_file(config)
                 return config
 
     def remove_wallpaper_folder(self, btn):
@@ -239,7 +259,9 @@ class Application(Gtk.Application):
 
         appMenu = Gio.Menu()
         appMenu.append("About", "app.about")
+        appMenu.append("Settings", "app.settings")
         appMenu.append("Quit", "app.quit")
+
         about_action = Gio.SimpleAction.new("about", None)
         about_action.connect("activate", self.on_about_activate)
         self.builder.get_object("aboutdialog").connect(
@@ -247,6 +269,15 @@ class Application(Gtk.Application):
                 self.builder.get_object("aboutdialog").hide() or True
         )
         self.add_action(about_action)
+
+        settings_action = Gio.SimpleAction.new("settings", None)
+        settings_action.connect("activate", self.on_settings_activate)
+        self.builder.get_object("settingsWindow").connect(
+            "delete-event", lambda *_:
+                self.builder.get_object("settingsWindow").hide() or True
+        )
+        self.add_action(settings_action)
+
         quit_action = Gio.SimpleAction.new("quit", None)
         quit_action.connect("activate", self.on_quit_activate)
         self.add_action(quit_action)
@@ -284,6 +315,9 @@ class Application(Gtk.Application):
 
     def on_about_activate(self, *args):
         self.builder.get_object("aboutdialog").show()
+
+    def on_settings_activate(self, *args):
+        self.builder.get_object("settingsWindow").show()
 
     def on_quit_activate(self, *args):
         self.quit()
@@ -360,6 +394,13 @@ class Application(Gtk.Application):
         self.fill_wallpapers_folders_popover_listbox()
         self.refresh_wallpapers_flowbox()
 
+    def on_wallpaperSelectionModeToggle_state_set(self, switch, doubleclick_activate):
+        if doubleclick_activate:
+            self.configuration['selection_mode'] = 'double'
+        else:
+            self.configuration['selection_mode'] = 'single'
+        self.wallpapers_flowbox.set_activate_on_single_click(not doubleclick_activate)
+        self.save_config_file(self.configuration)
 
     # Handler functions END
 
