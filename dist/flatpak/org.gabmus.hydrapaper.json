@@ -33,8 +33,8 @@
             "builddir": true,
             "sources": [{
                 "type": "archive",
-                "url": "https://github.com/GabMus/HydraPaper/archive/1.1.tar.gz",
-                "sha256": "fe80cc452b16f1e95e3839d772f32e231b608329553561adb7110b7adafe7413"
+                "url": "https://github.com/GabMus/HydraPaper/archive/1.1.1.tar.gz",
+                "sha256": "d08b9d8f34ac3082b486c1850ccc602bb32d768093de2162573eb214f6c9dd7a"
             }]
         },
         {
