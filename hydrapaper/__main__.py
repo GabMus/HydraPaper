@@ -86,6 +86,7 @@ class Application(Gtk.Application):
 
         # This is a list of Monitor objects
         self.monitors = MonitorParser.build_monitors_from_dict()
+        self.sync_monitors_from_config()
         self.wallpapers_list = []
 
         self.wallpapers_folders_toggle = self.builder.get_object('wallpapersFoldersToggle')
@@ -96,6 +97,20 @@ class Application(Gtk.Application):
         self.errorDialog.add_button('Ok', 0)
         self.errorDialog.set_default_response(0)
         self.errorDialog.set_transient_for(self.window)
+
+    def sync_monitors_from_config(self):
+        for m in self.monitors:
+            if m.name in self.configuration['monitors'].keys():
+                m.wallpaper = self.configuration['monitors'][m.name]
+            else:
+                self.configuration['monitors'][m.name] = m.wallpaper
+        self.save_config_file(self.configuration)
+
+    def dump_monitors_to_config(self):
+        for m in self.monitors:
+            if m.name in self.configuration['monitors'].keys():
+                self.configuration['monitors'][m.name] = m.wallpaper
+        self.save_config_file(self.configuration)
 
     def save_config_file(self, n_config=None):
         if not n_config:
@@ -111,7 +126,8 @@ class Application(Gtk.Application):
                     '{0}/Pictures'.format(HOME),
                     '/usr/share/backgrounds/gnome/'
                 ],
-                'selection_mode': 'single'
+                'selection_mode': 'single',
+                'monitors': {}
             }
             self.save_config_file(n_config)
             return n_config
@@ -124,9 +140,12 @@ class Application(Gtk.Application):
                         '{0}/Pictures'.format(HOME),
                         '/usr/share/backgrounds/gnome/'
                     ]
-                    self.save_config_file(n_config)
+                    self.save_config_file(config)
                 if not 'selection_mode' in config.keys():
                     config['selection_mode'] = 'single'
+                    self.save_config_file(config)
+                if not 'monitors' in config.keys():
+                    config['monitors'] = {}
                     self.save_config_file(config)
                 return config
 
@@ -167,7 +186,11 @@ class Application(Gtk.Application):
         label = Gtk.Label()
         label.set_text(monitor.name)
         image = Gtk.Image()
-        image.set_from_icon_name('image-missing', Gtk.IconSize.DIALOG)
+        if monitor.wallpaper:
+            m_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(monitor.wallpaper, 64, 64, True)
+            image.set_from_pixbuf(m_pixbuf)
+        else:
+            image.set_from_icon_name('image-missing', Gtk.IconSize.DIALOG)
         box.pack_start(image, False, False, 0)
         box.pack_start(label, False, False, 0)
         box.set_margin_left(24)
@@ -290,12 +313,6 @@ class Application(Gtk.Application):
 
         self.refresh_wallpapers_flowbox()
 
-
-    def run_startup_async_operations(self):
-        init_wp_thread = ThreadingHelper.do_async(self.init_wallpapers, (0,))
-        ThreadingHelper.wait_for_thread(init_wp_thread)
-        self.wallpapers_flowbox.show_all()
-
     def do_command_line(self, args):
         """
         GTK.Application command line handler
@@ -335,30 +352,37 @@ class Application(Gtk.Application):
             selected_item.get_child().wallpaper_path
         )
 
-    def apply_button_async_handler(self, btn):
-        if len(self.monitors) == 1:
-            WallpaperMerger.set_wallpaper(self.monitors[0].wallpaper, 'zoom')
+    def apply_button_async_handler(self, monitors):
+        if len(monitors) == 1:
+            WallpaperMerger.set_wallpaper(monitors[0].wallpaper, 'zoom')
             return
         #if len(self.monitors) != 2:
         #    print('Configurations different from 2 monitors are not supported for now :(')
         #    exit(1)
-        if not (self.monitors[0].wallpaper and self.monitors[1].wallpaper):
-            print('Set all of the wallpapers before applying')
-            self.errorDialog.set_markup('Set all of the wallpapers before applying')
-            self.errorDialog.run()
-            self.errorDialog.hide()
-            return
+        for m in monitors:
+            if not m.wallpaper:
+                print('Set all of the wallpapers before applying')
+                self.errorDialog.set_markup('Set all of the wallpapers before applying')
+                self.errorDialog.run()
+                self.errorDialog.hide()
+                return
         if not os.path.isdir(HYDRAPAPER_CACHE_PATH):
             os.mkdir(HYDRAPAPER_CACHE_PATH)
+        new_wp_filename = '_'.join(([m.wallpaper for m in monitors]))
         saved_wp_path = '{0}/{1}.png'.format(HYDRAPAPER_CACHE_PATH, hashlib.sha256(
-            'HydraPaper{0}{1}'.format(
-                self.monitors[0].wallpaper, self.monitors[1].wallpaper
-            ).encode()
+            'HydraPaper{0}'.format(new_wp_filename).encode()
         ).hexdigest())
-        WallpaperMerger.multi_setup_pillow(
-            self.monitors,
-            saved_wp_path
-        )
+        if not os.path.isfile(saved_wp_path):
+            WallpaperMerger.multi_setup_pillow(
+                monitors,
+                saved_wp_path
+            )
+        else:
+            print(
+                'Hit cache for wallpaper {0}. Skipping merge operation.'.format(
+                    saved_wp_path
+                )
+            )
         WallpaperMerger.set_wallpaper(saved_wp_path)
 
     def on_applyButton_clicked(self, btn):
@@ -369,7 +393,7 @@ class Application(Gtk.Application):
         # activate spinner
         self.apply_spinner.start()
         # run thread
-        thread = ThreadingHelper.do_async(self.apply_button_async_handler, (btn,))
+        thread = ThreadingHelper.do_async(self.apply_button_async_handler, (self.monitors[:],))
         # wait for thread to finish
         ThreadingHelper.wait_for_thread(thread)
         # restore interaction and deactivate spinner
@@ -377,6 +401,7 @@ class Application(Gtk.Application):
         self.monitors_flowbox.set_sensitive(True)
         self.wallpapers_flowbox.set_sensitive(True)
         self.apply_spinner.stop()
+        self.dump_monitors_to_config()
 
     def on_wallpapersFoldersToggle_toggled(self, toggle):
         if toggle.get_active():
