@@ -14,9 +14,27 @@ This tool requires `python-pillow` and `python-xmltodict`
 
 You can find HydraPaper on AUR, as `hydrapaper-git` ([AUR page](https://aur.archlinux.org/packages/hydrapaper-git)).
 
+### Installing via Flatpak
+
+- Make sure you have flatpak installed in your system ([here is a tutorial on how to install it](https://flatpak.org/getting.html)), and make sure that the version is >= 0.10 (check it using this command: `flatpak --version`)
+- Add the [flathub](https://flathub.org) repository using the following command: `flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo`. This is needed for flatpak to download the GNOME 3.26 Runtime
+- Download the latest flatpak release [from the releases page](https://github.com/GabMus/HydraPaper/releases)
+- Install the flatpak file you just downloaded either opening it up with GNOME Software or using one of the following commands:
+  - To install HydraPaper systemwide: `flatpak install hydrapaper*.flatpak`
+  - To install HydraPaper locally for your user only: `flatpak --user install hydrapaper*.flatpak`
+
+#### Uninstalling HydraPaper flatpak
+
+You can uninstall HydraPaper from GNOME Software.
+
+Alternatively you can run one of these commands:
+
+- If you installed HydraPaper using GNOME Software or systemwide: `flatpak uninstall org.gabmus.hydrapaper`
+- If you installed HydraPaper locally for your user only: `flatpak --user uninstall org.gabmus.hydrapaper`
+
 ### Other distros
 
-HydraPaper is available as a flatpak. [You can download it from here](https://github.com/GabMus/HydraPaper/releases).
+Your best bet is installing via Flatpak. [Check the instructions in this section](#installing-via-flatpak).
 
 Alternatively ou can either run HydraPaper without installing it (refer to the [Building for testing section](#building-for-testing)), or install it in your system (refer to the [Installing systemwide directly section](#build-and-install-systemwide-directly)).
 
