@@ -78,7 +78,7 @@ def build_monitors_from_dict(path_to_monitors_xml='{0}{1}'.format(HOME, MONITORS
     try:
         with open(path_to_monitors_xml) as fd:
             doc = xmltodict.parse(fd.read())
-        if doc['monitors']['@version'] == 1: # Really expect version 2 in most cases
+        if doc['monitors']['@version'] == '1': # Really expect version 2 in most cases
             return _monitor_parser_v1(doc)
         if type(json.loads(json.dumps(doc['monitors']['configuration']))) == list:
             lm_list = doc['monitors']['configuration'][-1]['logicalmonitor']
