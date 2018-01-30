@@ -84,6 +84,16 @@ class Application(Gtk.Application):
             self.configuration['selection_mode'] == 'single'
         )
 
+        self.selected_wallpaper_path_entry = self.builder.get_object('selectedWallpaperPathEntry')
+
+        self.wallpapers_flowbox_itemoptions_popover = self.builder.get_object('wallpapersFlowboxItemoptionsPopover')
+
+        # handle longpress gesture for wallpapers_flowbox
+        self.wallpapers_flowbox_longpress_gesture = Gtk.GestureLongPress.new(self.wallpapers_flowbox)
+        self.wallpapers_flowbox_longpress_gesture.set_propagation_phase(Gtk.PropagationPhase.TARGET)
+        self.wallpapers_flowbox_longpress_gesture.set_touch_only(False)
+        self.wallpapers_flowbox_longpress_gesture.connect("pressed", self.on_wallpapersFlowbox_rightclick_or_longpress, self.wallpapers_flowbox)
+
         self.errorDialog = Gtk.MessageDialog()
         self.errorDialog.add_button('Ok', 0)
         self.errorDialog.set_default_response(0)
@@ -357,6 +367,25 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.quit()
 
     # Handler functions START
+
+    def on_wallpapersFlowbox_rightclick_or_longpress(self, gesture_or_event, x, y, flowbox):
+        child_at_pos = flowbox.get_child_at_pos(x,y)
+        wp_path = child_at_pos.get_child().wallpaper_path
+        flowbox.select_child(child_at_pos)
+        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(child_at_pos)
+        self.selected_wallpaper_path_entry.set_text(wp_path)
+        self.wallpapers_flowbox_itemoptions_popover.popup()
+        self.builder.get_object('selectedWallpaperName').set_text(pathlib.Path(wp_path).name)
+        self.on_wallpapersFlowbox_child_activated(flowbox, child_at_pos)
+
+    def on_wallpapersFlowbox_button_release_event(self, flowbox, event):
+        if event.button == 3: # 3 is the right mouse button
+            self.on_wallpapersFlowbox_rightclick_or_longpress(
+                event,
+                event.x,
+                event.y,
+                flowbox
+            )
 
     def on_aboutdialog_close(self, *args):
         self.builder.get_object("aboutdialog").hide()
