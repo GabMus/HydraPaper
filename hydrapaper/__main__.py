@@ -73,6 +73,7 @@ class Application(Gtk.Application):
 
         self.monitors_flowbox = self.builder.get_object('monitorsFlowbox')
         self.wallpapers_flowbox = self.builder.get_object('wallpapersFlowbox')
+        self.wallpapers_flowbox_favorites = self.builder.get_object('wallpapersFlowboxFavorites')
 
         self.wallpaper_selection_mode_toggle = self.builder.get_object('wallpaperSelectionModeToggle')
 
@@ -80,6 +81,12 @@ class Application(Gtk.Application):
             not self.configuration['selection_mode'] == 'single'
         )
 
+        self.changing_toggle_manually = False
+        self.add_to_favorites_toggle = self.builder.get_object('addToFavoritesToggle')
+
+        self.wallpapers_flowbox_favorites.set_activate_on_single_click(
+            self.configuration['selection_mode'] == 'single'
+        )
         self.wallpapers_flowbox.set_activate_on_single_click(
             self.configuration['selection_mode'] == 'single'
         )
@@ -94,11 +101,19 @@ class Application(Gtk.Application):
         self.wallpapers_flowbox_longpress_gesture.set_touch_only(False)
         self.wallpapers_flowbox_longpress_gesture.connect("pressed", self.on_wallpapersFlowbox_rightclick_or_longpress, self.wallpapers_flowbox)
 
+        self.wallpapers_flowbox_favorites_longpress_gesture = Gtk.GestureLongPress.new(self.wallpapers_flowbox_favorites)
+        self.wallpapers_flowbox_favorites_longpress_gesture.set_propagation_phase(Gtk.PropagationPhase.TARGET)
+        self.wallpapers_flowbox_favorites_longpress_gesture.set_touch_only(False)
+        self.wallpapers_flowbox_favorites_longpress_gesture.connect("pressed", self.on_wallpapersFlowbox_rightclick_or_longpress, self.wallpapers_flowbox_favorites)
+
         self.errorDialog = Gtk.MessageDialog()
         self.errorDialog.add_button('Ok', 0)
         self.errorDialog.set_default_response(0)
         self.errorDialog.set_transient_for(self.window)
 
+        self.favorites_box = self.builder.get_object('favoritesBox')
+
+        self.child_at_pos = None
         # This is a list of Monitor objects
         self.monitors = MonitorParser.build_monitors_from_dict()
         if not self.monitors:
@@ -151,7 +166,8 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                     '/usr/share/backgrounds/gnome/'
                 ],
                 'selection_mode': 'single',
-                'monitors': {}
+                'monitors': {},
+                'favorites': []
             }
             self.save_config_file(n_config)
             return n_config
@@ -170,6 +186,9 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                     self.save_config_file(config)
                 if not 'monitors' in config.keys():
                     config['monitors'] = {}
+                    self.save_config_file(config)
+                if not 'favorites' in config.keys():
+                    config['favorites'] = []
                     self.save_config_file(config)
                 return config
 
@@ -249,6 +268,10 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
 
     def fill_wallpapers_flowbox_async(self):
         for w in self.wallpapers_list:
+            if w in self.configuration['favorites']:
+                target_wallpapers_flowbox = self.wallpapers_flowbox_favorites
+            else:
+                target_wallpapers_flowbox = self.wallpapers_flowbox
             widget = [] # workaround: passing widget as a list to pass its reference
             widget_thread = ThreadingHelper.do_async(
                 self.make_wallpapers_flowbox_item,
@@ -256,11 +279,11 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             )
             ThreadingHelper.wait_for_thread(widget_thread)
             if len(widget) == 1:
-                self.wallpapers_flowbox.insert(
+                target_wallpapers_flowbox.insert(
                     widget[0],
                 -1) # -1 appends to the end
                 widget[0].show_all()
-                self.wallpapers_flowbox.show_all()
+                target_wallpapers_flowbox.show_all()
 
     def check_if_image(self, pic):
         path = pathlib.Path(pic)
@@ -290,11 +313,23 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             item = self.wallpapers_flowbox.get_child_at_index(0)
             if item:
                 self.wallpapers_flowbox.remove(item)
+                item.destroy()
+            else:
+                break
+        while True:
+            item = self.wallpapers_flowbox_favorites.get_child_at_index(0)
+            if item:
+                self.wallpapers_flowbox_favorites.remove(item)
+                item.destroy()
             else:
                 break
 
     def refresh_wallpapers_flowbox(self):
         self.empty_wallpapers_flowbox()
+        if len(self.configuration['favorites']) == 0:
+            self.favorites_box.hide()
+        else:
+            self.favorites_box.show_all()
         get_wallpapers_thread = ThreadingHelper.do_async(self.get_wallpapers_list, (0,))
         ThreadingHelper.wait_for_thread(get_wallpapers_thread)
         self.fill_wallpapers_flowbox_async()
@@ -369,14 +404,22 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
     # Handler functions START
 
     def on_wallpapersFlowbox_rightclick_or_longpress(self, gesture_or_event, x, y, flowbox):
-        child_at_pos = flowbox.get_child_at_pos(x,y)
-        wp_path = child_at_pos.get_child().wallpaper_path
-        flowbox.select_child(child_at_pos)
-        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(child_at_pos)
+        self.changing_toggle_manually = True
+        if flowbox == self.wallpapers_flowbox:
+            self.add_to_favorites_toggle.set_active(False)
+        else:
+            self.add_to_favorites_toggle.set_active(True)
+        self.changing_toggle_manually = False
+        self.child_at_pos = flowbox.get_child_at_pos(x,y)
+        if not self.child_at_pos:
+            return
+        wp_path = self.child_at_pos.get_child().wallpaper_path
+        flowbox.select_child(self.child_at_pos)
+        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.child_at_pos)
         self.selected_wallpaper_path_entry.set_text(wp_path)
         self.wallpapers_flowbox_itemoptions_popover.popup()
         self.builder.get_object('selectedWallpaperName').set_text(pathlib.Path(wp_path).name)
-        self.on_wallpapersFlowbox_child_activated(flowbox, child_at_pos)
+        self.on_wallpapersFlowbox_child_activated(flowbox, self.child_at_pos)
 
     def on_wallpapersFlowbox_button_release_event(self, flowbox, event):
         if event.button == 3: # 3 is the right mouse button
@@ -428,6 +471,20 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             )
         WallpaperMerger.set_wallpaper(saved_wp_path)
 
+    def on_addToFavoritesToggle_clicked(self, toggle):
+        if self.changing_toggle_manually:
+            return
+        self.wallpapers_flowbox_itemoptions_popover.popdown()
+        if not self.child_at_pos:
+            return
+        wp_path = self.child_at_pos.get_child().wallpaper_path
+        if toggle.get_active():
+            self.configuration['favorites'].append(wp_path)
+        else:
+            self.configuration['favorites'].pop(self.configuration['favorites'].index(wp_path))
+        self.save_config_file()
+        self.refresh_wallpapers_flowbox()
+
     def on_applyButton_clicked(self, btn):
         # disable interaction
         self.apply_button.set_sensitive(False)
@@ -468,6 +525,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         else:
             self.configuration['selection_mode'] = 'single'
         self.wallpapers_flowbox.set_activate_on_single_click(not doubleclick_activate)
+        self.wallpapers_flowbox_favorites.set_activate_on_single_click(not doubleclick_activate)
         self.save_config_file(self.configuration)
 
     # Handler functions END
