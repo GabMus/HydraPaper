@@ -61,7 +61,7 @@ def _monitor_parser_v1(doc):
         return monitors
 
     except Exception as e:
-        print('Error: error parsing monitors.xml\n\nException:'
+        print('Error: error parsing monitors.xml\n\nException:')
         print(e)
         return None
 
