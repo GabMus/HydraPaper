@@ -240,17 +240,28 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         box.set_margin_right(24)
         return box
 
-    def make_wallpapers_flowbox_item(self, wp_path, return_widget_pointer=-1):
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+    def make_wallpaper_pixbuf(self, wp_path, return_pixbuf_pointer=-1):
         wp_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, 250, 250, True)
-        image = Gtk.Image.new_from_pixbuf(wp_pixbuf)
-        box.pack_start(image, False, False, 0)
-        box.set_margin_left(12)
-        box.set_margin_right(12)
-        box.wallpaper_path = wp_path
-        if type(return_widget_pointer) == list:
-            return_widget_pointer.append(box)
-        return box
+        if type(return_pixbuf_pointer) == list:
+            return_pixbuf_pointer.append(wp_pixbuf)
+        return wp_pixbuf
+
+    def make_wallpapers_flowbox_item(self, wp_path):
+        pixbuf_fake_list=[]
+        pixbuf_thread = ThreadingHelper.do_async(
+            self.make_wallpaper_pixbuf,
+            (wp_path, pixbuf_fake_list)
+        )
+        ThreadingHelper.wait_for_thread(pixbuf_thread)
+        if len(pixbuf_fake_list) == 1:
+            wp_pixbuf = pixbuf_fake_list[0]
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            image = Gtk.Image.new_from_pixbuf(wp_pixbuf)
+            box.pack_start(image, False, False, 0)
+            box.set_margin_left(12)
+            box.set_margin_right(12)
+            box.wallpaper_path = wp_path
+            return box
 
     def fill_monitors_flowbox(self):
         for m in self.monitors:
@@ -272,18 +283,10 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                 target_wallpapers_flowbox = self.wallpapers_flowbox_favorites
             else:
                 target_wallpapers_flowbox = self.wallpapers_flowbox
-            widget = [] # workaround: passing widget as a list to pass its reference
-            widget_thread = ThreadingHelper.do_async(
-                self.make_wallpapers_flowbox_item,
-                (w, widget)
-            )
-            ThreadingHelper.wait_for_thread(widget_thread)
-            if len(widget) == 1:
-                target_wallpapers_flowbox.insert(
-                    widget[0],
-                -1) # -1 appends to the end
-                widget[0].show_all()
-                target_wallpapers_flowbox.show_all()
+            widget = self.make_wallpapers_flowbox_item(w)
+            target_wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
+            widget.show_all()
+            target_wallpapers_flowbox.show_all()
 
     def check_if_image(self, pic):
         path = pathlib.Path(pic)
