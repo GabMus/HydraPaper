@@ -63,14 +63,12 @@ Author: Gabriele Musco
           </packing>
         </child>
         <child>
-          <object class="GtkToggleButton" id="addToFavoritesToggle">
-            <property name="label" translatable="yes">⭐ Favorite</property>
+          <object class="GtkButton" id="addToFavoritesButton">
+            <property name="label" translatable="yes">❤ Add to favorites</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="halign">center</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
             <signal name="clicked" handler="on_addToFavoritesToggle_clicked" swapped="no"/>
           </object>
           <packing>

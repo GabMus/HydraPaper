@@ -81,8 +81,7 @@ class Application(Gtk.Application):
             not self.configuration['selection_mode'] == 'single'
         )
 
-        self.changing_toggle_manually = False
-        self.add_to_favorites_toggle = self.builder.get_object('addToFavoritesToggle')
+        self.add_to_favorites_toggle = self.builder.get_object('addToFavoritesButton')
 
         self.wallpapers_flowbox_favorites.set_activate_on_single_click(
             self.configuration['selection_mode'] == 'single'
@@ -407,22 +406,20 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
     # Handler functions START
 
     def on_wallpapersFlowbox_rightclick_or_longpress(self, gesture_or_event, x, y, flowbox):
-        self.changing_toggle_manually = True
-        if flowbox == self.wallpapers_flowbox:
-            self.add_to_favorites_toggle.set_active(False)
-        else:
-            self.add_to_favorites_toggle.set_active(True)
-        self.changing_toggle_manually = False
         self.child_at_pos = flowbox.get_child_at_pos(x,y)
         if not self.child_at_pos:
             return
-        wp_path = self.child_at_pos.get_child().wallpaper_path
+        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.child_at_pos.get_child())
         flowbox.select_child(self.child_at_pos)
-        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.child_at_pos)
+        if flowbox == self.wallpapers_flowbox:
+            self.add_to_favorites_toggle.set_label('❤ Add to favorites')
+        else:
+            self.add_to_favorites_toggle.set_label('💔 Remove from favorites')
+        wp_path = self.child_at_pos.get_child().wallpaper_path
         self.selected_wallpaper_path_entry.set_text(wp_path)
-        self.wallpapers_flowbox_itemoptions_popover.popup()
         self.builder.get_object('selectedWallpaperName').set_text(pathlib.Path(wp_path).name)
         self.on_wallpapersFlowbox_child_activated(flowbox, self.child_at_pos)
+        self.wallpapers_flowbox_itemoptions_popover.popup()
 
     def on_wallpapersFlowbox_button_release_event(self, flowbox, event):
         if event.button == 3: # 3 is the right mouse button
@@ -467,14 +464,16 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             )
         WallpaperMerger.set_wallpaper(saved_wp_path)
 
-    def on_addToFavoritesToggle_clicked(self, toggle):
-        if self.changing_toggle_manually:
-            return
+    def on_addToFavoritesToggle_clicked(self, button):
+        print('asking to popdown')
         self.wallpapers_flowbox_itemoptions_popover.popdown()
+        print('popped down popover')
+        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.wallpapers_flowbox)
+        print('changed popover relative')
         if not self.child_at_pos:
             return
         wp_path = self.child_at_pos.get_child().wallpaper_path
-        if toggle.get_active():
+        if 'add' in button.get_label().lower():
             self.configuration['favorites'].append(wp_path)
         else:
             self.configuration['favorites'].pop(self.configuration['favorites'].index(wp_path))
