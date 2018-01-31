@@ -448,13 +448,6 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         #if len(self.monitors) != 2:
         #    print('Configurations different from 2 monitors are not supported for now :(')
         #    exit(1)
-        for m in monitors:
-            if not m.wallpaper:
-                print('Set all of the wallpapers before applying')
-                self.errorDialog.set_markup('Set all of the wallpapers before applying')
-                self.errorDialog.run()
-                self.errorDialog.hide()
-                return
         if not os.path.isdir(HYDRAPAPER_CACHE_PATH):
             os.mkdir(HYDRAPAPER_CACHE_PATH)
         new_wp_filename = '_'.join(([m.wallpaper for m in monitors]))
@@ -489,6 +482,13 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.refresh_wallpapers_flowbox()
 
     def on_applyButton_clicked(self, btn):
+        for m in self.monitors:
+            if not m.wallpaper:
+                print('Set all of the wallpapers before applying')
+                self.errorDialog.set_markup('Set all of the wallpapers before applying')
+                self.errorDialog.run()
+                self.errorDialog.hide()
+                return
         # disable interaction
         self.apply_button.set_sensitive(False)
         self.monitors_flowbox.set_sensitive(False)
