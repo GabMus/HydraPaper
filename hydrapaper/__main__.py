@@ -339,7 +339,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
     def do_activate(self):
         self.add_window(self.window)
         self.window.set_wmclass('HydraPaper', 'HydraPaper')
-        self.window.set_title('HydraPaper')
+        # self.window.set_title('HydraPaper')
 
         appMenu = Gio.Menu()
         appMenu.append("About", "app.about")
@@ -409,7 +409,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.child_at_pos = flowbox.get_child_at_pos(x,y)
         if not self.child_at_pos:
             return
-        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.child_at_pos.get_child())
+        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.child_at_pos)
         flowbox.select_child(self.child_at_pos)
         if flowbox == self.wallpapers_flowbox:
             self.add_to_favorites_toggle.set_label('❤ Add to favorites')
@@ -529,6 +529,11 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.wallpapers_flowbox.set_activate_on_single_click(not doubleclick_activate)
         self.wallpapers_flowbox_favorites.set_activate_on_single_click(not doubleclick_activate)
         self.save_config_file(self.configuration)
+
+    def on_resetFavoritesButton_clicked(self, button):
+        self.configuration['favorites'] = []
+        self.save_config_file()
+        self.refresh_wallpapers_flowbox()
 
     # Handler functions END
 

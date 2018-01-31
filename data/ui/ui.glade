@@ -34,6 +34,7 @@ Author: Gabriele Musco
   </object>
   <object class="GtkPopover" id="wallpapersFlowboxItemoptionsPopover">
     <property name="can_focus">False</property>
+    <property name="position">bottom</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -300,6 +301,7 @@ Author: Gabriele Musco
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="has_subtitle">False</property>
         <property name="show_close_button">True</property>
         <child>
           <object class="GtkToggleButton" id="wallpapersFoldersToggle">
@@ -312,10 +314,10 @@ Author: Gabriele Musco
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkImage">
+                  <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="icon_name">folder</property>
+                    <property name="label" translatable="yes">Wallpapers folders</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -324,11 +326,10 @@ Author: Gabriele Musco
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkArrow">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">6</property>
-                    <property name="label" translatable="yes">Wallpapers folders</property>
+                    <property name="arrow_type">down</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -469,10 +470,62 @@ Author: Gabriele Musco
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">12</property>
+            <property name="margin_bottom">12</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">12</property>
+                <property name="label" translatable="yes">Clear all favorites</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="resetFavoritesButton">
+                <property name="label">gtk-clear</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="margin_right">12</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_resetFavoritesButton_clicked" swapped="no"/>
+                <style>
+                  <class name="destructive-action"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
     </child>
