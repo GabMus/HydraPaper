@@ -62,7 +62,8 @@ def _monitor_parser_v1(doc):
 
     except Exception as e:
         print('Error: error parsing monitors.xml\n\nException:')
-        print(e)
+        import traceback
+        traceback.print_exc()
         return None
 
 
@@ -117,5 +118,6 @@ def build_monitors_from_dict(path_to_monitors_xml='{0}{1}'.format(HOME, MONITORS
         print('Error: error parsing {0}\n\nException:'.format(
             path_to_monitors_xml
         ))
-        print(e)
+        import traceback
+        traceback.print_exc()
         return None
