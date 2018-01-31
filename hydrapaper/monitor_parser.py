@@ -31,6 +31,20 @@ def _monitor_parser_v1(doc):
         index = 1
         if type(conf['output']) == list:
             for o in conf['output']:
+                if 'width' in o.keys():
+                    monitors.append(Monitor(
+                        o['width'],
+                        o['height'],
+                        o['x'],
+                        o['y'],
+                        index,
+                        '{0} - {1}'.format(o['vendor'], o['@name']),
+                        o['primary'] == 'yes'
+                    ))
+                    index += 1
+        else:
+            o = conf['output']
+            if 'width' in o.keys():
                 monitors.append(Monitor(
                     o['width'],
                     o['height'],
@@ -43,21 +57,6 @@ def _monitor_parser_v1(doc):
                     ),
                     o['primary'] == 'yes'
                 ))
-                index += 1
-        else:
-            o = conf['output']
-            monitors.append(Monitor(
-                o['width'],
-                o['height'],
-                o['x'],
-                o['y'],
-                index,
-                '{0} - {1}'.format(
-                    o['vendor'],
-                    o['@name']
-                ),
-                o['primary'] == 'yes'
-            ))
         return monitors
 
     except Exception as e:
