@@ -67,6 +67,11 @@ class Application(Gtk.Application):
 
         self.window = self.builder.get_object('window')
 
+        self.window.resize(
+            self.configuration['windowsize']['width'],
+            self.configuration['windowsize']['height']
+        )
+
         self.mainBox = self.builder.get_object('mainBox')
         self.apply_button = self.builder.get_object('applyButton')
         self.apply_spinner = self.builder.get_object('applySpinner')
@@ -136,6 +141,14 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.wallpapers_folders_popover = self.builder.get_object('wallpapersFoldersPopover')
         self.wallpapers_folders_popover_listbox = self.builder.get_object('wallpapersFoldersPopoverListbox')
 
+    def on_window_size_allocate(self, *args):
+        alloc = self.window.get_allocation()
+        self.configuration['windowsize']['width'] = alloc.width
+        self.configuration['windowsize']['height'] = alloc.height
+
+    def do_before_quit(self):
+        self.save_config_file()
+
     def sync_monitors_from_config(self):
         for m in self.monitors:
             if m.name in self.configuration['monitors'].keys():
@@ -166,7 +179,11 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                 ],
                 'selection_mode': 'single',
                 'monitors': {},
-                'favorites': []
+                'favorites': [],
+                'windowsize': {
+                    'width': 600,
+                    'height': 400
+                },
             }
             self.save_config_file(n_config)
             return n_config
@@ -188,6 +205,12 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                     self.save_config_file(config)
                 if not 'favorites' in config.keys():
                     config['favorites'] = []
+                    self.save_config_file(config)
+                if not 'windowsize' in config.keys():
+                    config['windowsize'] = {
+                        'width': 600,
+                        'height': 400
+                    }
                     self.save_config_file(config)
                 return config
 
@@ -398,9 +421,11 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.builder.get_object("settingsWindow").show()
 
     def on_quit_activate(self, *args):
+        self.do_before_quit()
         self.quit()
 
     def onDeleteWindow(self, *args):
+        self.do_before_quit()
         self.quit()
 
     # Handler functions START
