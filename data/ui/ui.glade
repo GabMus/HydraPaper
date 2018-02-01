@@ -158,93 +158,30 @@ Author: Gabriele Musco
           </packing>
         </child>
         <child>
-          <object class="GtkPaned">
+          <object class="GtkStackSwitcher" id="mainStackSwitcher">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="orientation">vertical</property>
-            <property name="wide_handle">True</property>
-            <child>
-              <object class="GtkBox" id="favoritesBox">
-                <property name="height_request">200</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_left">24</property>
-                    <property name="margin_right">6</property>
-                    <property name="margin_top">6</property>
-                    <property name="label" translatable="yes">⭐ Favorites</property>
-                    <attributes>
-                      <attribute name="style" value="italic"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScrolledWindow">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <property name="shadow_type">in</property>
-                    <child>
-                      <object class="GtkViewport">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkFlowBox" id="wallpapersFlowboxFavorites">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <signal name="button-release-event" handler="on_wallpapersFlowbox_button_release_event" swapped="no"/>
-                            <signal name="child-activated" handler="on_wallpapersFlowbox_child_activated" swapped="no"/>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="resize">True</property>
-                <property name="shrink">False</property>
-              </packing>
-            </child>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="stack">mainStack</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStack" id="mainStack">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="transition_type">slide-left-right</property>
             <child>
               <object class="GtkBox" id="mainWpBox">
-                <property name="height_request">400</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_left">24</property>
-                    <property name="margin_right">6</property>
-                    <property name="margin_top">6</property>
-                    <property name="label" translatable="yes">Wallpapers</property>
-                    <attributes>
-                      <attribute name="style" value="italic"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <object class="GtkScrolledWindow">
@@ -275,19 +212,60 @@ Author: Gabriele Musco
                 </child>
               </object>
               <packing>
-                <property name="resize">True</property>
-                <property name="shrink">False</property>
+                <property name="name">Wallpapers</property>
+                <property name="title" translatable="yes">Wallpapers</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="favoritesBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">never</property>
+                    <property name="shadow_type">in</property>
+                    <child>
+                      <object class="GtkViewport">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkFlowBox" id="wallpapersFlowboxFavorites">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="min_children_per_line">1</property>
+                            <property name="max_children_per_line">80</property>
+                            <signal name="button-release-event" handler="on_wallpapersFlowbox_button_release_event" swapped="no"/>
+                            <signal name="child-activated" handler="on_wallpapersFlowbox_child_activated" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="name">Favorites</property>
+                <property name="title" translatable="yes">Favorites</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>
