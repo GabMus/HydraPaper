@@ -16,18 +16,23 @@ def make_image_row(text, img_path):
     row.add(box)
     return row
 
-def make_label_button_row(text, btnlabel, clickedfunction):
+def make_label_button_check_row(text, btnlabel, clickedfunction, checkactive, checkfunction):
     box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
     label = Gtk.Label()
     label.set_text(text)
+    label.set_margin_left(6)
+    label.set_margin_right(12)
+    label.set_halign(Gtk.Align.START)
     btn = Gtk.Button()
     btn.set_label(btnlabel)
     btn.value = text
     btn.connect('clicked', clickedfunction)
     btn.get_style_context().add_class('destructive-action')
-    label.set_margin_left(6)
-    label.set_margin_right(12)
-    label.set_halign(Gtk.Align.START)
+    check = Gtk.CheckButton()
+    check.value = text
+    check.set_active(checkactive)
+    check.connect('toggled', checkfunction)
+    box.pack_start(check, False, False, 0)
     box.pack_start(label, True, True, 0)
     box.pack_start(btn, False, False, 0)
     box.set_margin_top(6)
