@@ -259,6 +259,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             for subchild in child.get_child().get_children():
                 if type(subchild) in [Gtk.CheckButton, Gtk.Button]:
                     subchild.set_sensitive(sensitive)
+        self.add_to_favorites_toggle.set_sensitive(sensitive)
 
 
     def on_wallpaper_folder_checkbox_toggled(self, check):
