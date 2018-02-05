@@ -29,6 +29,7 @@ from . import monitor_parser as MonitorParser
 from . import wallpaper_merger as WallpaperMerger
 from . import threading_helper as ThreadingHelper
 from . import listbox_helper as ListboxHelper
+from . import wallpaper_flowbox_item as WallpaperFlowboxItem
 
 import hashlib # for pseudo-random wallpaper name generation
 
@@ -314,28 +315,8 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         box.set_margin_right(24)
         return box
 
-    def make_wallpaper_pixbuf(self, wp_path, return_pixbuf_pointer=-1):
-        wp_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, 250, 250, True)
-        if type(return_pixbuf_pointer) == list:
-            return_pixbuf_pointer.append(wp_pixbuf)
-        return wp_pixbuf
-
     def make_wallpapers_flowbox_item(self, wp_path):
-        pixbuf_fake_list=[]
-        pixbuf_thread = ThreadingHelper.do_async(
-            self.make_wallpaper_pixbuf,
-            (wp_path, pixbuf_fake_list)
-        )
-        ThreadingHelper.wait_for_thread(pixbuf_thread)
-        if len(pixbuf_fake_list) == 1:
-            wp_pixbuf = pixbuf_fake_list[0]
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-            image = Gtk.Image.new_from_pixbuf(wp_pixbuf)
-            box.pack_start(image, False, False, 0)
-            box.set_margin_left(12)
-            box.set_margin_right(12)
-            box.wallpaper_path = wp_path
-            return box
+        return WallpaperFlowboxItem.WallpaperBox(wp_path)
 
     def fill_monitors_flowbox(self):
         for m in self.monitors:
@@ -345,11 +326,18 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
 
     def fill_wallpapers_flowbox(self):
         for w in self.wallpapers_list:
+            if w in self.configuration['favorites']:
+                target_wallpapers_flowbox = self.wallpapers_flowbox_favorites
+            else:
+                target_wallpapers_flowbox = self.wallpapers_flowbox
             widget = self.make_wallpapers_flowbox_item(w)
-            self.wallpapers_flowbox.insert(
-                widget,
-            -1) # -1 appends to the end
-            # widget.show_all()
+            target_wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
+            widget.show_all()
+            target_wallpapers_flowbox.show_all()
+        for wb in self.wallpapers_flowbox_favorites.get_children():
+            wb.set_wallpaper_thumb()
+        for wb in self.wallpapers_flowbox.get_children():
+            wb.set_wallpaper_thumb()
 
     def fill_wallpapers_flowbox_async(self):
         for w in self.wallpapers_list:
@@ -414,7 +402,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             self.favorites_box.show_all()
         get_wallpapers_thread = ThreadingHelper.do_async(self.get_wallpapers_list, (0,))
         ThreadingHelper.wait_for_thread(get_wallpapers_thread)
-        self.fill_wallpapers_flowbox_async()
+        self.fill_wallpapers_flowbox()
         self.wallpapers_refreshing_locked = False
         self.all_wallpaper_folder_interactives_set_sensitive(True)
 
@@ -549,11 +537,8 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         WallpaperMerger.set_wallpaper(saved_wp_path)
 
     def on_addToFavoritesToggle_clicked(self, button):
-        print('asking to popdown')
         self.wallpapers_flowbox_itemoptions_popover.popdown()
-        print('popped down popover')
         self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.wallpapers_flowbox)
-        print('changed popover relative')
         if not self.child_at_pos:
             return
         wp_path = self.child_at_pos.get_child().wallpaper_path
