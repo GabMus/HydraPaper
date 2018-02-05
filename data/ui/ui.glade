@@ -52,6 +52,7 @@ Author: Gabriele Musco
             <property name="justify">center</property>
             <property name="ellipsize">end</property>
             <property name="single_line_mode">True</property>
+            <property name="max_width_chars">50</property>
             <attributes>
               <attribute name="weight" value="bold"/>
               <attribute name="scale" value="1.2"/>
