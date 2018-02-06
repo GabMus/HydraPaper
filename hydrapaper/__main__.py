@@ -629,6 +629,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
     def on_keepFavoritesInMainviewToggle_state_set(self, switch, favs_in_mainview):
         self.configuration['favorites_in_mainview'] = favs_in_mainview
         self.save_config_file(self.configuration)
+        self.refresh_wallpapers_flowbox()
 
     def on_resetFavoritesButton_clicked(self, button):
         self.configuration['favorites'] = []
