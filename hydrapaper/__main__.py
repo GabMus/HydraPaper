@@ -343,14 +343,14 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             widget = self.make_wallpapers_flowbox_item(w)
             if w in self.configuration['favorites']:
                 target_wallpapers_flowbox = self.wallpapers_flowbox_favorites
-                widget.is_fav = True
+                widget.set_fav(True)
             else:
                 target_wallpapers_flowbox = self.wallpapers_flowbox
-                widget.is_fav = False
+                widget.set_fav(False)
             target_wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
             if self.configuration['favorites_in_mainview'] and target_wallpapers_flowbox == self.wallpapers_flowbox_favorites:
                 widget_c = self.make_wallpapers_flowbox_item(w)
-                widget_c.is_fav = True
+                widget_c.set_fav(True)
                 self.wallpapers_flowbox.insert(widget_c, -1)
                 widget_c.show_all()
                 self.wallpapers_flowbox.show_all()
@@ -627,9 +627,10 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.save_config_file(self.configuration)
 
     def on_keepFavoritesInMainviewToggle_state_set(self, switch, favs_in_mainview):
-        self.configuration['favorites_in_mainview'] = favs_in_mainview
-        self.save_config_file(self.configuration)
-        self.refresh_wallpapers_flowbox()
+        if self.configuration['favorites_in_mainview'] != favs_in_mainview:
+            self.configuration['favorites_in_mainview'] = favs_in_mainview
+            self.save_config_file(self.configuration)
+            self.refresh_wallpapers_flowbox()
 
     def on_resetFavoritesButton_clicked(self, button):
         self.configuration['favorites'] = []

@@ -30,14 +30,24 @@ class WallpaperBox(Gtk.FlowBoxChild):
 
         self.wallpaper_path = wp_path
         self.is_fav = False
-        self.container_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.container_box = Gtk.Overlay()
         self.container_box.set_halign(Gtk.Align.CENTER)
         self.container_box.set_valign(Gtk.Align.CENTER)
         self.wp_image = Gtk.Image.new_from_icon_name('image-x-generic', Gtk.IconSize.DIALOG)
-        self.container_box.pack_start(self.wp_image, False, False, 0)
+        self.heart_icon = Gtk.Image.new_from_icon_name('emblem-favorite', Gtk.IconSize.DIALOG)
+        self.heart_icon.set_no_show_all(True)
+        self.heart_icon.set_halign(Gtk.Align.END)
+        self.heart_icon.set_valign(Gtk.Align.END)
+        self.heart_icon.set_margin_bottom(6)
+        self.heart_icon.set_margin_right(6)
+        self.container_box.add(self.wp_image)
         self.container_box.set_margin_left(12)
         self.container_box.set_margin_right(12)
         self.container_box.wallpaper_path = wp_path
+
+        self.container_box.add_overlay(self.heart_icon)
+        self.heart_icon.hide()
+
         self.add(self.container_box)
 
     def set_wallpaper_thumb(self):
@@ -49,6 +59,13 @@ class WallpaperBox(Gtk.FlowBoxChild):
         ThreadingHelper.wait_for_thread(pixbuf_thread)
         self.wp_image.set_from_pixbuf(pixbuf_fake_list[0])
         self.wp_image.show()
+
+    def set_fav(self, fav):
+        self.is_fav = fav
+        if self.is_fav:
+            self.heart_icon.show()
+        else:
+            self.heart_icon.hide()
 
     def make_wallpaper_pixbuf(self, wp_path, return_pixbuf_pointer=-1):
         wp_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(wp_path, 250, 250, True)
