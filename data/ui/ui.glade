@@ -433,6 +433,7 @@ Author: Gabriele Musco
               <object class="GtkSwitch" id="wallpaperSelectionModeToggle">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="margin_left">12</property>
                 <property name="margin_right">12</property>
                 <signal name="state-set" handler="on_wallpaperSelectionModeToggle_state_set" swapped="no"/>
               </object>
@@ -473,6 +474,59 @@ Author: Gabriele Musco
                 <property name="halign">start</property>
                 <property name="margin_left">12</property>
                 <property name="margin_right">12</property>
+                <property name="label" translatable="yes">Keep favorites in main wallpapers view</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="keepFavoritesInMainviewToggle">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">12</property>
+                <signal name="state-set" handler="on_keepFavoritesInMainviewToggle_state_set" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">12</property>
+            <property name="margin_bottom">12</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">12</property>
                 <property name="label" translatable="yes">Clear all favorites</property>
               </object>
               <packing>
@@ -487,6 +541,7 @@ Author: Gabriele Musco
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="margin_left">12</property>
                 <property name="margin_right">12</property>
                 <property name="use_stock">True</property>
                 <signal name="clicked" handler="on_resetFavoritesButton_clicked" swapped="no"/>
@@ -504,7 +559,7 @@ Author: Gabriele Musco
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>

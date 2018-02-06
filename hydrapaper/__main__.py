@@ -84,6 +84,12 @@ class Application(Gtk.Application):
         self.wallpapers_flowbox = self.builder.get_object('wallpapersFlowbox')
         self.wallpapers_flowbox_favorites = self.builder.get_object('wallpapersFlowboxFavorites')
 
+        self.keep_favorites_in_mainview_toggle = self.builder.get_object('keepFavoritesInMainviewToggle')
+
+        self.keep_favorites_in_mainview_toggle.set_active(
+            self.configuration['favorites_in_mainview']
+        )
+
         self.wallpaper_selection_mode_toggle = self.builder.get_object('wallpaperSelectionModeToggle')
 
         self.wallpaper_selection_mode_toggle.set_active(
@@ -190,6 +196,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                 'selection_mode': 'single',
                 'monitors': {},
                 'favorites': [],
+                'favorites_in_mainview': False,
                 'windowsize': {
                     'width': 600,
                     'height': 400
@@ -198,6 +205,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             self.save_config_file(n_config)
             return n_config
         else:
+            do_save = False
             with open(self.CONFIG_FILE_PATH, 'r') as fd:
                 config = json.loads(fd.read())
                 fd.close()
@@ -212,7 +220,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                         'active': True
                     }
                 ]
-                    self.save_config_file(config)
+                    do_save = True
                 if len(config['wallpapers_paths']) > 0:
                     for index, path in enumerate(config['wallpapers_paths']):
                         if type(path) == str:
@@ -220,20 +228,26 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                                 'path': path,
                                 'active': True
                             }
+                    do_save = True
                 if not 'selection_mode' in config.keys():
                     config['selection_mode'] = 'single'
-                    self.save_config_file(config)
+                    do_save = True
                 if not 'monitors' in config.keys():
                     config['monitors'] = {}
-                    self.save_config_file(config)
+                    do_save = True
                 if not 'favorites' in config.keys():
                     config['favorites'] = []
-                    self.save_config_file(config)
+                    do_save = True
+                if not 'favorites_in_mainview' in config.keys():
+                    config['favorites_in_mainview'] = False
+                    do_save = True
                 if not 'windowsize' in config.keys():
                     config['windowsize'] = {
                         'width': 600,
                         'height': 400
                     }
+                    do_save = True
+                if do_save:
                     self.save_config_file(config)
                 return config
 
@@ -326,12 +340,20 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
 
     def fill_wallpapers_flowbox(self):
         for w in self.wallpapers_list:
+            widget = self.make_wallpapers_flowbox_item(w)
             if w in self.configuration['favorites']:
                 target_wallpapers_flowbox = self.wallpapers_flowbox_favorites
+                widget.is_fav = True
             else:
                 target_wallpapers_flowbox = self.wallpapers_flowbox
-            widget = self.make_wallpapers_flowbox_item(w)
+                widget.is_fav = False
             target_wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
+            if self.configuration['favorites_in_mainview'] and target_wallpapers_flowbox == self.wallpapers_flowbox_favorites:
+                widget_c = self.make_wallpapers_flowbox_item(w)
+                widget_c.is_fav = True
+                self.wallpapers_flowbox.insert(widget_c, -1)
+                widget_c.show_all()
+                self.wallpapers_flowbox.show_all()
             widget.show_all()
             target_wallpapers_flowbox.show_all()
         for wb in self.wallpapers_flowbox_favorites.get_children():
@@ -483,10 +505,10 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             return
         self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.child_at_pos)
         flowbox.select_child(self.child_at_pos)
-        if flowbox == self.wallpapers_flowbox:
-            self.add_to_favorites_toggle.set_label('❤ Add to favorites')
-        else:
+        if flowbox == self.wallpapers_flowbox_favorites or self.child_at_pos.is_fav:
             self.add_to_favorites_toggle.set_label('💔 Remove from favorites')
+        else:
+            self.add_to_favorites_toggle.set_label('❤ Add to favorites')
         wp_path = self.child_at_pos.get_child().wallpaper_path
         self.selected_wallpaper_path_entry.set_text(wp_path)
         self.builder.get_object('selectedWallpaperName').set_text(pathlib.Path(wp_path).name)
@@ -602,6 +624,10 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             self.configuration['selection_mode'] = 'single'
         self.wallpapers_flowbox.set_activate_on_single_click(not doubleclick_activate)
         self.wallpapers_flowbox_favorites.set_activate_on_single_click(not doubleclick_activate)
+        self.save_config_file(self.configuration)
+
+    def on_keepFavoritesInMainviewToggle_state_set(self, switch, favs_in_mainview):
+        self.configuration['favorites_in_mainview'] = favs_in_mainview
         self.save_config_file(self.configuration)
 
     def on_resetFavoritesButton_clicked(self, button):

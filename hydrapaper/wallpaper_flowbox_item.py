@@ -25,6 +25,7 @@ class WallpaperBox(Gtk.FlowBoxChild):
     def __init__(self, wp_path, *args, **kwds):
         super().__init__(*args, **kwds)
         self.wallpaper_path = wp_path
+        self.is_fav = False
         self.container_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.wp_image = Gtk.Image.new_from_icon_name('image-x-generic', Gtk.IconSize.DIALOG)
         self.container_box.pack_start(self.wp_image, False, False, 0)
