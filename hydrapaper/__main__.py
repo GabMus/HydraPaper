@@ -280,22 +280,23 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
     def on_wallpaper_folder_checkbox_toggled(self, check):
         if not check.value:
             return
-        for index, path in enumerate(self.configuration['wallpapers_paths']):
-            if path['path'] == check.value:
+        for index, folder in enumerate(self.configuration['wallpapers_paths']):
+            if folder['path'] == check.value:
                 self.configuration['wallpapers_paths'][index]['active'] = check.get_active()
                 break
         self.save_config_file()
-        self.refresh_wallpapers_flowbox()
+        #self.refresh_wallpapers_flowbox()
+        self.show_hide_wallpapers()
 
     def fill_wallpapers_folders_popover_listbox(self):
         ListboxHelper.empty_listbox(self.wallpapers_folders_popover_listbox)
-        for path in self.configuration['wallpapers_paths']:
+        for folder in self.configuration['wallpapers_paths']:
             self.wallpapers_folders_popover_listbox.add(
                 ListboxHelper.make_label_button_check_row(
-                    path['path'],
+                    folder['path'],
                     'Remove',
                     self.remove_wallpaper_folder,
-                    path['active'],
+                    folder['active'],
                     self.on_wallpaper_folder_checkbox_toggled
                 )
             )
@@ -338,7 +339,25 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                 self.make_monitors_flowbox_item(m),
             -1) # -1 appends to the end
 
-    def fill_wallpapers_flowbox(self):
+    def show_hide_wallpapers(self):
+        for wb in self.wallpapers_flowbox.get_children():
+            for folder in self.configuration['wallpapers_paths']:
+                if folder['path'] in wb.wallpaper_path:
+                    if folder['active']:
+                        wb.show_all()
+                    else:
+                        wb.hide()
+                    break
+        for wb in self.wallpapers_flowbox_favorites.get_children():
+            for folder in self.configuration['wallpapers_paths']:
+                if folder['path'] in wb.wallpaper_path:
+                    if folder['active']:
+                        wb.show_all()
+                    else:
+                        wb.hide()
+                    break
+
+    def fill_wallpapers_flowbox(self): # called by self.refresh_wallpapers_flowbox
         for w in self.wallpapers_list:
             widget = self.make_wallpapers_flowbox_item(w)
             if w in self.configuration['favorites']:
@@ -361,39 +380,24 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         for wb in self.wallpapers_flowbox.get_children():
             wb.set_wallpaper_thumb()
 
-    def fill_wallpapers_flowbox_async(self):
-        for w in self.wallpapers_list:
-            if w in self.configuration['favorites']:
-                target_wallpapers_flowbox = self.wallpapers_flowbox_favorites
-            else:
-                target_wallpapers_flowbox = self.wallpapers_flowbox
-            widget = self.make_wallpapers_flowbox_item(w)
-            target_wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
-            widget.show_all()
-            target_wallpapers_flowbox.show_all()
-
     def check_if_image(self, pic):
-        path = pathlib.Path(pic)
+        im_path = pathlib.Path(pic)
         return (
-            path.suffix.lower() in IMAGE_EXTENSIONS and
-            path.exists() and
-            not path.is_dir()
+            im_path.suffix.lower() in IMAGE_EXTENSIONS and
+            im_path.exists() and
+            not im_path.is_dir()
         )
 
     def get_wallpapers_list(self, *args):
         for path_dict in self.configuration['wallpapers_paths']:
-            path = path_dict['path']
-            if path_dict['active'] and os.path.isdir(path):
-                pictures = os.listdir(path)
+            folder = path_dict['path']
+            if os.path.isdir(folder): # trying to just hide wallpapers in non active paths # and path_dict['active']:
+                pictures = os.listdir(folder)
                 for pic in pictures:
-                    picpath = '{0}/{1}'.format(path, pic)
+                    picpath = '{0}/{1}'.format(folder, pic)
                     if not self.check_if_image(picpath):
                         pictures.pop(pictures.index(pic))
-                self.wallpapers_list.extend(['{0}/'.format(path) + pic for pic in pictures])
-
-    def init_wallpapers(self, nothing): # Threading wants args to be passed to the function. I will pass something unimportant
-        self.get_wallpapers_list()
-        self.fill_wallpapers_flowbox()
+                self.wallpapers_list.extend(['{0}/'.format(folder) + pic for pic in pictures])
 
     def empty_wallpapers_flowbox(self):
         self.wallpapers_list = []
@@ -425,6 +429,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         get_wallpapers_thread = ThreadingHelper.do_async(self.get_wallpapers_list, (0,))
         ThreadingHelper.wait_for_thread(get_wallpapers_thread)
         self.fill_wallpapers_flowbox()
+        self.show_hide_wallpapers()
         self.wallpapers_refreshing_locked = False
         self.all_wallpaper_folder_interactives_set_sensitive(True)
 
