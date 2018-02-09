@@ -97,6 +97,7 @@ class Application(Gtk.Application):
         )
 
         self.add_to_favorites_toggle = self.builder.get_object('addToFavoritesButton')
+        self.favorites_button_clicked = False
 
         self.wallpapers_flowbox_favorites.set_activate_on_single_click(
             self.configuration['selection_mode'] == 'single'
@@ -590,18 +591,24 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                     break
         self.show_hide_wallpapers()
 
+    def on_wallpapersFlowboxItemoptionsPopover_notify_visible(self, *args):
+        if self.favorites_button_clicked:
+            button = self.add_to_favorites_toggle
+            if not self.child_at_pos:
+                return
+            wp_path = self.child_at_pos.get_child().wallpaper_path
+            if 'add' in button.get_label().lower():
+                self.configuration['favorites'].append(wp_path)
+            else:
+                self.configuration['favorites'].pop(self.configuration['favorites'].index(wp_path))
+            self.save_config_file()
+            self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.wallpapers_flowbox)
+            self.set_favorite_state(wp_path, self.child_at_pos, 'add' in button.get_label().lower())
+            self.favorites_button_clicked = False
+
     def on_addToFavoritesToggle_clicked(self, button):
+        self.favorites_button_clicked = True
         self.wallpapers_flowbox_itemoptions_popover.popdown()
-        if not self.child_at_pos:
-            return
-        wp_path = self.child_at_pos.get_child().wallpaper_path
-        if 'add' in button.get_label().lower():
-            self.configuration['favorites'].append(wp_path)
-        else:
-            self.configuration['favorites'].pop(self.configuration['favorites'].index(wp_path))
-        self.save_config_file()
-        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.wallpapers_flowbox)
-        self.set_favorite_state(wp_path, self.child_at_pos, 'add' in button.get_label().lower())
 
     def on_applyButton_clicked(self, btn):
         for m in self.monitors:
@@ -616,6 +623,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.monitors_flowbox.set_sensitive(False)
         self.wallpapers_flowbox.set_sensitive(False)
         # activate spinner
+        self.apply_spinner.show()
         self.apply_spinner.start()
         # run thread
         thread = ThreadingHelper.do_async(self.apply_button_async_handler, (self.monitors[:],))
@@ -626,6 +634,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.monitors_flowbox.set_sensitive(True)
         self.wallpapers_flowbox.set_sensitive(True)
         self.apply_spinner.stop()
+        self.apply_spinner.hide()
         self.dump_monitors_to_config()
 
     def on_wallpapersFoldersToggle_toggled(self, toggle):
