@@ -356,25 +356,31 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                     else:
                         wb.hide()
                     break
+        if self.configuration['favorites_in_mainview']:
+            for wb in self.wallpapers_flowbox.get_children():
+                if wb.wallpaper_path in self.configuration['favorites']:
+                    wb.show_all()
+        else:
+            for wb in self.wallpapers_flowbox.get_children():
+                if wb.wallpaper_path in self.configuration['favorites']:
+                    wb.hide()
 
     def fill_wallpapers_flowbox(self): # called by self.refresh_wallpapers_flowbox
         for w in self.wallpapers_list:
             widget = self.make_wallpapers_flowbox_item(w)
             if w in self.configuration['favorites']:
-                target_wallpapers_flowbox = self.wallpapers_flowbox_favorites
                 widget.set_fav(True)
             else:
-                target_wallpapers_flowbox = self.wallpapers_flowbox
                 widget.set_fav(False)
-            target_wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
-            if self.configuration['favorites_in_mainview'] and target_wallpapers_flowbox == self.wallpapers_flowbox_favorites:
+            self.wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
+            if w in self.configuration['favorites']:
                 widget_c = self.make_wallpapers_flowbox_item(w)
                 widget_c.set_fav(True)
-                self.wallpapers_flowbox.insert(widget_c, -1)
+                self.wallpapers_flowbox_favorites.insert(widget_c, -1)
                 widget_c.show_all()
-                self.wallpapers_flowbox.show_all()
+                self.wallpapers_flowbox_favorites.show_all()
             widget.show_all()
-            target_wallpapers_flowbox.show_all()
+            self.wallpapers_flowbox.show_all()
         for wb in self.wallpapers_flowbox_favorites.get_children():
             wb.set_wallpaper_thumb()
         for wb in self.wallpapers_flowbox.get_children():
@@ -563,6 +569,10 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
             )
         WallpaperMerger.set_wallpaper(saved_wp_path)
 
+    def set_favorite_state(self, wp_path, wp_widget, isfavorite):
+        return
+        wp_widget.set_fav(isfavorite)
+
     def on_addToFavoritesToggle_clicked(self, button):
         self.wallpapers_flowbox_itemoptions_popover.popdown()
         self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.wallpapers_flowbox)
@@ -635,7 +645,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         if self.configuration['favorites_in_mainview'] != favs_in_mainview:
             self.configuration['favorites_in_mainview'] = favs_in_mainview
             self.save_config_file(self.configuration)
-            self.refresh_wallpapers_flowbox()
+            self.show_hide_wallpapers()
 
     def on_resetFavoritesButton_clicked(self, button):
         self.configuration['favorites'] = []
