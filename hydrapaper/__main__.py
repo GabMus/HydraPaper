@@ -340,31 +340,47 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                 self.make_monitors_flowbox_item(m),
             -1) # -1 appends to the end
 
-    def show_hide_wallpapers(self):
-        for wb in self.wallpapers_flowbox.get_children():
-            for folder in self.configuration['wallpapers_paths']:
-                if folder['path'] in wb.wallpaper_path:
-                    if folder['active']:
-                        wb.show_all()
-                    else:
-                        wb.hide()
-                    break
-        for wb in self.wallpapers_flowbox_favorites.get_children():
-            for folder in self.configuration['wallpapers_paths']:
-                if folder['path'] in wb.wallpaper_path:
-                    if folder['active']:
-                        wb.show_all()
-                    else:
-                        wb.hide()
-                    break
-        if self.configuration['favorites_in_mainview']:
-            for wb in self.wallpapers_flowbox.get_children():
-                if wb.wallpaper_path in self.configuration['favorites']:
-                    wb.show_all()
+    def evaluate_wallpaper_visibility(self, wp_widget, flowbox):
+        visibility = False
+        exists_in_folder = False
+        for folder in self.configuration['wallpapers_paths']:
+            if folder['path'] in wp_widget.wallpaper_path:
+                exists_in_folder = True
+                if folder['active']:
+                    visibility = True
+                else:
+                    return False
+                break
+        if exists_in_folder:
+            visibility = True
         else:
-            for wb in self.wallpapers_flowbox.get_children():
-                if wb.wallpaper_path in self.configuration['favorites']:
-                    wb.hide()
+            return False
+        if flowbox == self.wallpapers_flowbox:
+            if wp_widget.wallpaper_path in self.configuration['favorites']:
+                if self.configuration['favorites_in_mainview']:
+                    visibility = True
+                else:
+                    return False
+            else:
+                visibility = True
+        else:
+            if wp_widget.wallpaper_path in self.configuration['favorites']:
+                visibility = True
+            else:
+                return False
+        return visibility
+
+    def show_hide_wallpapers(self):
+        for wp_widget in self.wallpapers_flowbox.get_children():
+            if self.evaluate_wallpaper_visibility(wp_widget, self.wallpapers_flowbox):
+                wp_widget.show_all()
+            else:
+                wp_widget.hide()
+        for wp_widget in self.wallpapers_flowbox_favorites.get_children():
+            if self.evaluate_wallpaper_visibility(wp_widget, self.wallpapers_flowbox_favorites):
+                wp_widget.show_all()
+            else:
+                wp_widget.hide()
 
     def fill_wallpapers_flowbox(self): # called by self.refresh_wallpapers_flowbox
         for w in self.wallpapers_list:
@@ -520,7 +536,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         if flowbox == self.wallpapers_flowbox_favorites or self.child_at_pos.is_fav:
             self.add_to_favorites_toggle.set_label('💔 Remove from favorites')
         else:
-            self.add_to_favorites_toggle.set_label('❤ Add to favorites')
+            self.add_to_favorites_toggle.set_label('❤️ Add to favorites')
         wp_path = self.child_at_pos.get_child().wallpaper_path
         self.selected_wallpaper_path_entry.set_text(wp_path)
         self.builder.get_object('selectedWallpaperName').set_text(pathlib.Path(wp_path).name)
