@@ -570,12 +570,28 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         WallpaperMerger.set_wallpaper(saved_wp_path)
 
     def set_favorite_state(self, wp_path, wp_widget, isfavorite):
-        return
-        wp_widget.set_fav(isfavorite)
+        if isfavorite:
+            widget_c = self.make_wallpapers_flowbox_item(wp_path)
+            widget_c.set_fav(True)
+            wp_widget.set_fav(True)
+            self.wallpapers_flowbox_favorites.insert(widget_c, -1)
+            widget_c.show_all()
+            self.wallpapers_flowbox_favorites.show_all()
+            widget_c.set_wallpaper_thumb()
+        else:
+            for wb in self.wallpapers_flowbox_favorites.get_children():
+                if wb.wallpaper_path == wp_path:
+                    self.wallpapers_flowbox_favorites.remove(wb)
+                    wb.destroy()
+                    break
+            for wb in self.wallpapers_flowbox.get_children():
+                if wb.wallpaper_path == wp_path:
+                    wb.set_fav(False)
+                    break
+        self.show_hide_wallpapers()
 
     def on_addToFavoritesToggle_clicked(self, button):
         self.wallpapers_flowbox_itemoptions_popover.popdown()
-        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.wallpapers_flowbox)
         if not self.child_at_pos:
             return
         wp_path = self.child_at_pos.get_child().wallpaper_path
@@ -584,7 +600,8 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         else:
             self.configuration['favorites'].pop(self.configuration['favorites'].index(wp_path))
         self.save_config_file()
-        self.refresh_wallpapers_flowbox()
+        self.wallpapers_flowbox_itemoptions_popover.set_relative_to(self.wallpapers_flowbox)
+        self.set_favorite_state(wp_path, self.child_at_pos, 'add' in button.get_label().lower())
 
     def on_applyButton_clicked(self, btn):
         for m in self.monitors:
