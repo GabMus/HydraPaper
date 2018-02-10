@@ -325,6 +325,36 @@ Author: Gabriele Musco
           </object>
         </child>
         <child>
+          <object class="GtkToggleButton" id="lowerAllOtherWindowsToggle">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Minimize all other windows</property>
+            <signal name="toggled" handler="on_lowerAllOtherWindowsToggle_toggled" swapped="no"/>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">go-bottom</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="applySpinner">
+            <property name="width_request">32</property>
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkButton" id="applyButton">
             <property name="label">gtk-apply</property>
             <property name="visible">True</property>
@@ -335,17 +365,6 @@ Author: Gabriele Musco
             <style>
               <class name="suggested-action"/>
             </style>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinner" id="applySpinner">
-            <property name="width_request">32</property>
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
           </object>
           <packing>
             <property name="pack_type">end</property>

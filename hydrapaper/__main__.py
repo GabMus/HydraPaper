@@ -23,7 +23,8 @@ import json
 import argparse
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, Gio, GdkPixbuf
+gi.require_version('Wnck', '3.0')
+from gi.repository import Gtk, Wnck, Gdk, Gio, GdkPixbuf
 
 from . import monitor_parser as MonitorParser
 from . import wallpaper_merger as WallpaperMerger
@@ -134,6 +135,8 @@ class Application(Gtk.Application):
 
         self.favorites_box = self.builder.get_object('favoritesBox')
 
+        self.windows_to_restore = []
+
         self.child_at_pos = None
         # This is a list of Monitor objects
         self.monitors = MonitorParser.build_monitors_from_dict()
@@ -164,6 +167,7 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.configuration['windowsize']['height'] = alloc.height
 
     def do_before_quit(self):
+        self.unminimize_all_other_windows()
         self.save_config_file()
 
     def sync_monitors_from_config(self):
@@ -700,8 +704,31 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.save_config_file()
         self.refresh_wallpapers_flowbox()
 
-    # Handler functions END
+    def unminimize_all_other_windows(self):
+        from time import time as timestamp
+        screen = Wnck.Screen.get_default()
+        screen.force_update()  # recommended per Wnck documentation
+        for window in self.windows_to_restore:
+            if window.is_minimized():
+                window.unminimize(timestamp())
+        for window in screen.get_windows():
+            if window.get_application().get_name() == 'hydrapaper':
+                window.activate(timestamp())
+                break
 
+    def on_lowerAllOtherWindowsToggle_toggled(self, toggle):
+        if toggle.get_active():
+            screen = Wnck.Screen.get_default()
+            screen.force_update()  # recommended per Wnck documentation
+            self.windows_to_restore = []
+            for window in screen.get_windows():
+                if not window.is_minimized() and not 'desktop' in window.get_application().get_name().lower() and window.get_application().get_name() != 'hydrapaper':
+                    self.windows_to_restore.append(window)
+                    window.minimize()
+        else:
+            self.unminimize_all_other_windows()
+
+    # Handler functions END
 
 def main():
     application = Application()
