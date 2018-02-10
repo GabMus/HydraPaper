@@ -6,7 +6,7 @@ A Gtk utility to set two different backgrounds for each monitor on GNOME (which 
 
 ## Requirements
 
-This tool requires `python-pillow` and `python-xmltodict`
+This tool requires `python-pillow` and `python-xmltodict`.
 
 ## Installing
 
@@ -22,6 +22,12 @@ You can find HydraPaper on AUR, as `hydrapaper-git` ([AUR page](https://aur.arch
 - Install the flatpak file you just downloaded either opening it up with GNOME Software or using one of the following commands:
   - To install HydraPaper systemwide: `flatpak install hydrapaper*.flatpak`
   - To install HydraPaper locally for your user only: `flatpak --user install hydrapaper*.flatpak`
+
+#### Using development builds
+
+For every change made to HydraPaper there will be a flatpak. If you want to try out the latest features and don't mind some bugs or crashes here and there, or if you want to help out with development, you can grab the latest development snapshot build using the link below.
+
+**[Get the latest development snapshot](https://gabmus.gitbub.io/HydraPaper)**
 
 #### Uninstalling HydraPaper flatpak
 
@@ -93,4 +99,3 @@ cd builddir
 meson ..
 ninja install
 ```
-

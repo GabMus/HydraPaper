@@ -1,0 +1,13 @@
+---
+language: generic
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t karras/flatpak .
+
+script:
+- docker run --privileged -it karras/flatpak /bin/bash -c "git clone https://github.com/gabmus/HydraPaper /root/hydrapaper; flatpak-builder build --repo=/root/repo hydrapaper /root/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean; flatpak build-bundle /root/repo $(cat /root/hydrapaper/misc/org.gabmus.hydrapapergit.json | python -c "import sys, json; print(json.loads(sys.stdin.read())['command'])")-$(git -C /root/hydrapaperdescribe --long --tags --always).flatpak org.gabmus.hydrapaper"
