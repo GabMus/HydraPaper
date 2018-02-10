@@ -33,9 +33,15 @@ from . import wallpaper_flowbox_item as WallpaperFlowboxItem
 
 import hashlib # for pseudo-random wallpaper name generation
 
-HOME = os.environ.get('HOME')
 
+HOME = os.environ.get('HOME')
+G_CONFIG_FILE_PATH = '{0}/.config/hydrapaper.json'.format(HOME)
 HYDRAPAPER_CACHE_PATH = '{0}/.cache/hydrapaper'.format(HOME)
+
+# check if inside flatpak sandbox. if so change some variables
+if os.path.isfile('{0}/flatpak-info'.format(os.environ['XDG_RUNTIME_DIR'])):
+    G_CONFIG_FILE_PATH = '{0}/hydrapaper.json'.format(os.environ.get('XDG_CONFIG_HOME'))
+    HYDRAPAPER_CACHE_PATH = '{0}/hydrapaper'.format(os.environ.get('XDG_CACHE_HOME'))
 
 IMAGE_EXTENSIONS = [
     '.jpg',
@@ -57,7 +63,7 @@ class Application(Gtk.Application):
         )
         self.RESOURCE_PATH = '/org/gabmus/hydrapaper/'
 
-        self.CONFIG_FILE_PATH = '{0}/.config/hydrapaper.json'.format(HOME)
+        self.CONFIG_FILE_PATH = G_CONFIG_FILE_PATH # G stands for Global (variable)
 
         self.configuration = self.get_config_file()
 
