@@ -8,7 +8,7 @@ services:
 
 before_script:
   - "docker pull thebiggerguy/docker-flatpak-dev"
-  - docker run -d -p 127.0.0.1:80:4567 thebiggerguy/docker-flatpak-dev /bin/sh -c "cd /root/sinatra;"
+  - docker run -d -p 127.0.0.1:80:4567 thebiggerguy/docker-flatpak-dev /bin/sh -c "cd /root/; ls"
   - docker ps -a
 
 script:
