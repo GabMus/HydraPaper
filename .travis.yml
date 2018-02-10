@@ -10,6 +10,6 @@ before_script:
   - "docker pull thebiggerguy/docker-flatpak-dev"
 
 script:
-- docker run --privileged -it --rm --cap-add=SYS_CHROOT thebiggerguy/docker-flatpak-dev /bin/sh -c "ls /"
+- docker run --privileged -it --rm thebiggerguy/docker-flatpak-dev /bin/sh -c "ls /"
 
-#mkdir -p /build/hydrapaper && git clone https://github.com/gabmus/HydraPaper /build/hydrapaper && flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && flatpak install flathub org.gnome.Platform 3.26 && flatpak install flathub org.gnome.Sdk 3.26 && flatpak-builder build --repo=/build/repo hydrapaper /build/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean && flatpak build-bundle /build/repo hydrapaper-$(git -C /build/hydrapaper describe --long --tags --always).flatpak org.gabmus.hydrapaper"
+#mkdir -p /build/hydrapaper && git clone https://github.com/gabmus/HydraPaper /build/hydrapaper && flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && flatpak install flathub org.gnome.Platform 3.26 && flatpak install flathub org.gnome.Sdk 3.26 && flatpak-builder build --repo=/build/repo hydrapaper /build/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean && flatpak build-bundle /build/repo hydrapaper-$(git -C /build/hydrapaper describe --long --tags --always).flatpak org.gabmus.hydrapaper"--cap-add=SYS_CHROOT 
