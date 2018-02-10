@@ -26,6 +26,7 @@
                     <li>Added longpress/rightclick menu</li>
                     <li>Implemented favorites</li>
                     <li>Added option to temporarely disable paths</li>
+                    <li>Added option to minimize/restore all other windows</li>
                     <li>Improved performance</li>
                     <li>Various optimizations for flatpak distribution</li>
                     <li>Various bug fixes</li>
