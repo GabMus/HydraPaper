@@ -8,7 +8,6 @@ services:
 
 before_script:
   - "docker pull gbraad/flatpak"
-  - "docker build -t gbraad/flatpak ."
 
 script:
 - docker run --privileged -it gbraad/flatpak /bin/bash -c "git clone https://github.com/gabmus/HydraPaper /root/hydrapaper; flatpak-builder build --repo=/root/repo hydrapaper /root/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean; flatpak build-bundle /root/repo hydrapaper-$(git -C /root/hydrapaperdescribe --long --tags --always).flatpak org.gabmus.hydrapaper"
