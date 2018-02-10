@@ -8,8 +8,8 @@ services:
 
 before_script:
   - "docker pull thebiggerguy/docker-flatpak-dev"
-  - docker run -d -p 127.0.0.1:80:4567 thebiggerguy/docker-flatpak-dev /bin/sh -c "cd /root/; ls"
+  - docker run -d -p --privileged 127.0.0.1:80:4567 thebiggerguy/docker-flatpak-dev /bin/sh -c "cd /root/; pwd"
   - docker ps -a
 
 script:
-  - docker exec --privileged thebiggerguy/docker-flatpak-dev /bin/bash -c "ls /" #" mkdir -p /build && git clone https://github.com/gabmus/HydraPaper /build/hydrapaper && flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && flatpak install flathub org.gnome.Platform 3.26 && flatpak install flathub org.gnome.Sdk 3.26 && flatpak-builder build --repo=/build/repo hydrapaper /build/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean && flatpak build-bundle /build/repo hydrapaper-$(git -C /build/hydrapaper describe --long --tags --always).flatpak org.gabmus.hydrapaper"
+  - mkdir -p build && git clone https://github.com/gabmus/HydraPaper build/hydrapaper && flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && flatpak install flathub org.gnome.Platform 3.26 && flatpak install flathub org.gnome.Sdk 3.26 && flatpak-builder build --repo=build/repo hydrapaper build/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean && flatpak build-bundle build/repo hydrapaper-$(git -C build/hydrapaper describe --long --tags --always).flatpak org.gabmus.hydrapaper"
