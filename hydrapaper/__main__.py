@@ -451,10 +451,10 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.wallpapers_refreshing_locked = True
         self.all_wallpaper_folder_interactives_set_sensitive(False)
         self.empty_wallpapers_flowbox()
-        if len(self.configuration['favorites']) == 0:
-            self.favorites_box.hide()
-        else:
-            self.favorites_box.show_all()
+        # if len(self.configuration['favorites']) == 0:
+        #     self.favorites_box.hide()
+        # else:
+        #     self.favorites_box.show_all()
         get_wallpapers_thread = ThreadingHelper.do_async(self.get_wallpapers_list, (0,))
         ThreadingHelper.wait_for_thread(get_wallpapers_thread)
         self.fill_wallpapers_flowbox()
