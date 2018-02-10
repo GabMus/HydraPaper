@@ -7,7 +7,7 @@ services:
   - docker
 
 before_script:
-  - "docker pull ubuntu"
+  - "docker pull thebiggerguy/docker-flatpak-dev"
 
 script:
-- docker run --privileged -it ubuntu /bin/bash -c "apt-get install -y python-software-properties; add-apt-repository ppa:alexlarsson/flatpak -y; apt-get update; apt-get install -y git flatpak flatpak-builder; git clone https://github.com/gabmus/HydraPaper /root/hydrapaper; flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo; flatpak install flathub org.gnome.Platform 3.26; flatpak install flathub org.gnome.Sdk 3.26; flatpak-builder build --repo=/root/repo hydrapaper /root/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean; flatpak build-bundle /root/repo hydrapaper-$(git -C /root/hydrapaper describe --long --tags --always).flatpak org.gabmus.hydrapaper"
+- docker run --privileged -it --rm --cap-add=SYS_CHROOT thebiggerguy/docker-flatpak-dev /bin/bash -c "git clone https://github.com/gabmus/HydraPaper /root/hydrapaper; flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo; flatpak install flathub org.gnome.Platform 3.26; flatpak install flathub org.gnome.Sdk 3.26; flatpak-builder build --repo=/root/repo hydrapaper /root/hydrapaper/misc/org.gabmus.hydrapapergit.json --force-clean; flatpak build-bundle /root/repo hydrapaper-$(git -C /root/hydrapaper describe --long --tags --always).flatpak org.gabmus.hydrapaper"
