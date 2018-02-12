@@ -31,6 +31,7 @@ from . import wallpaper_merger as WallpaperMerger
 from . import threading_helper as ThreadingHelper
 from . import listbox_helper as ListboxHelper
 from . import wallpaper_flowbox_item as WallpaperFlowboxItem
+from . import wallpaper_gallery as WallpaperGallery
 
 import hashlib # for pseudo-random wallpaper name generation
 
@@ -160,6 +161,8 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
         self.wallpapers_folders_toggle = self.builder.get_object('wallpapersFoldersToggle')
         self.wallpapers_folders_popover = self.builder.get_object('wallpapersFoldersPopover')
         self.wallpapers_folders_popover_listbox = self.builder.get_object('wallpapersFoldersPopoverListbox')
+
+        self.wallpaper_gallery = None
 
     def on_window_size_allocate(self, *args):
         alloc = self.window.get_allocation()
@@ -727,6 +730,16 @@ Then come back here. If it still doesn\'t work, considering filling an issue <a 
                     window.minimize()
         else:
             self.unminimize_all_other_windows()
+
+    def on_galleryBtn_clicked(self, btn):
+        self.wallpaper_gallery = WallpaperGallery.WallpaperGallery(self.monitors[0], self.wallpapers_list)
+        if self.wallpaper_gallery.is_visible():
+            self.wallpaper_gallery.hide()
+        else:
+            self.wallpaper_gallery.show_all()
+            self.wallpaper_gallery.re_resize()
+            self.wallpaper_gallery.set_gravity(Gdk.Gravity.SOUTH_WEST)
+
 
     # Handler functions END
 

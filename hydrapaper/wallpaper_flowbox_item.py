@@ -1,20 +1,3 @@
-# def make_wallpapers_flowbox_item(self, wp_path):
-#         pixbuf_fake_list=[]
-#         pixbuf_thread = ThreadingHelper.do_async(
-#             self.make_wallpaper_pixbuf,
-#             (wp_path, pixbuf_fake_list)
-#         )
-#         ThreadingHelper.wait_for_thread(pixbuf_thread)
-#         if len(pixbuf_fake_list) == 1:
-#             wp_pixbuf = pixbuf_fake_list[0]
-#             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-#             image = Gtk.Image.new_from_pixbuf(wp_pixbuf)
-#             box.pack_start(image, False, False, 0)
-#             box.set_margin_left(12)
-#             box.set_margin_right(12)
-#             box.wallpaper_path = wp_path
-#             return box
-
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, Gio, GdkPixbuf
