@@ -36,6 +36,17 @@
             }]
         },
         {
+            "name": "libwnck",
+            "buildsystem": "autotools",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.gnome.org/sources/libwnck/3.24/libwnck-3.24.1.tar.xz",
+                    "sha256": "afa6dc283582ffec15c3374790bcbcb5fb422bd38356d72deeef35bf7f9a1f04"
+                }
+            ]
+        },
+        {
             "name": "python-pillow",
             "buildsystem": "simple",
             "ensure-writable": [
