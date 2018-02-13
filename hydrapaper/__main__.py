@@ -709,7 +709,7 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
         screen.force_update()  # recommended per Wnck documentation
         for window in self.windows_to_restore:
             if window.is_minimized():
-                window.unminimize(timestamp())
+                window.activate(timestamp())
         for window in screen.get_windows():
             if window.get_application().get_name() == 'hydrapaper':
                 window.activate(timestamp())
@@ -717,6 +717,7 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
 
     def on_lowerAllOtherWindowsToggle_toggled(self, toggle):
         if toggle.get_active():
+            self.builder.get_object('lowerAllOtherWindowsToggle').get_child().set_from_icon_name('go-top', Gtk.IconSize.BUTTON)
             screen = Wnck.Screen.get_default()
             screen.force_update()  # recommended per Wnck documentation
             self.windows_to_restore = []
@@ -725,6 +726,7 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
                     self.windows_to_restore.append(window)
                     window.minimize()
         else:
+            self.builder.get_object('lowerAllOtherWindowsToggle').get_child().set_from_icon_name('go-bottom', Gtk.IconSize.BUTTON)
             self.unminimize_all_other_windows()
 
     # Handler functions END
