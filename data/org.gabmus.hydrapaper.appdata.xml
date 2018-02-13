@@ -29,6 +29,7 @@
                     <li>Added option to minimize/restore all other windows</li>
                     <li>Improved performance</li>
                     <li>Various optimizations for flatpak distribution</li>
+                    <li>Removed the dependency on xmltodict</li>
                     <li>Various bug fixes</li>
                 </ul>
             </description>

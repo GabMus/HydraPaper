@@ -139,17 +139,16 @@ class Application(Gtk.Application):
 
         self.child_at_pos = None
         # This is a list of Monitor objects
-        self.monitors = MonitorParser.build_monitors_from_dict()
+        self.monitors = MonitorParser.build_monitors_from_gdk()
         if not self.monitors:
             self.errorDialog.set_markup(
                 '''
 <b>Oh noes! 😱</b>
 
-There was an error parsing your monitors.xml file.
-That\'s really unfortunate 😿.
-Try going to your GNOME display settings, changing your resolution or monitor arrangement, and changing it back to normal.
+There was an error parsing your monitors!
+Make sure that you're running HydraPaper using the flatpak version, or otherwise that you have Gtk and Gdk version >=3.22 installed in your system.
 
-Then come back here. If it still doesn\'t work, considering filling an issue <a href="https://github.com/gabmus/hydrapaper/issues">on HydraPaper\'s bugtracker</a>, including the output of `cat ~/.config/monitors.xml`
+If you\'re still experiencing problems, considering filling an issue <a href="https://github.com/gabmus/hydrapaper/issues">on HydraPaper\'s bugtracker</a>, running HydraPaper from your terminal and including the output log.
                 '''
             )
             self.errorDialog.run()

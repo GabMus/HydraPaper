@@ -1,10 +1,6 @@
-from os import environ as env
-from os.path import isfile
-import xmltodict
-import json
-
-HOME=env.get('HOME')
-MONITORS_XML_PATH='/.config/monitors.xml'
+import gi
+gi.require_version('Gdk', '3.0')
+from gi.repository import Gdk
 
 class Monitor:
 
@@ -20,51 +16,6 @@ class Monitor:
 
     def __repr__(self):
         return self.name
-
-def _monitor_parser_v1(doc):
-    try:
-        monitors = []
-        if type(json.loads(json.dumps(doc['monitors']['configuration']))) == list:
-            conf = doc['monitors']['configuration'][-1]
-        else:
-            conf = doc['monitors']['configuration']
-        index = 1
-        if type(conf['output']) == list:
-            for o in conf['output']:
-                if 'width' in o.keys():
-                    monitors.append(Monitor(
-                        o['width'],
-                        o['height'],
-                        o['x'],
-                        o['y'],
-                        index,
-                        '{0} - {1}'.format(o['vendor'], o['@name']),
-                        o['primary'] == 'yes'
-                    ))
-                    index += 1
-        else:
-            o = conf['output']
-            if 'width' in o.keys():
-                monitors.append(Monitor(
-                    o['width'],
-                    o['height'],
-                    o['x'],
-                    o['y'],
-                    index,
-                    '{0} - {1}'.format(
-                        o['vendor'],
-                        o['@name']
-                    ),
-                    o['primary'] == 'yes'
-                ))
-        return monitors
-
-    except Exception as e:
-        print('Error: error parsing monitors.xml\n\nException:')
-        import traceback
-        traceback.print_exc()
-        return None
-
 
 def build_monitors_from_dict(path_to_monitors_xml='{0}{1}'.format(HOME, MONITORS_XML_PATH)):
     """Builds a list of Monitor objects from a logicalmonitor dictionary list
@@ -120,3 +71,30 @@ def build_monitors_from_dict(path_to_monitors_xml='{0}{1}'.format(HOME, MONITORS
         import traceback
         traceback.print_exc()
         return None
+
+def build_monitors_from_gdk():
+    monitors = []
+    try:
+        display = Gdk.Display.get_default()
+        num_monitors = display.get_n_monitors()
+        for i in range(0, num_monitors):
+            monitor = display.get_monitor(i)
+            monitor_rect = monitor.get_geometry()
+            monitors.append(Monitor(
+                monitor_rect.width,
+                monitor_rect.height,
+                monitor_rect.x,
+                monitor_rect.y,
+                i,
+                'Monitor {0} ({1})'.format(
+                    i,
+                    monitor.get_model()
+                ),
+                monitor.is_primary()
+            ))
+    except Exception as e:
+        print('Error: error parsing monitors (Gdk)')
+        import traceback
+        traceback.print_exc()
+        monitors = None
+    return monitors
