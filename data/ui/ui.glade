@@ -344,14 +344,15 @@ Author: Gabriele Musco
           </packing>
         </child>
         <child>
-          <object class="GtkSpinner" id="applySpinner">
-            <property name="width_request">32</property>
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
+          <object class="GtkButton" id="galleryBtn">
+            <property name="label" translatable="yes">galleryBtn</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_galleryBtn_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -365,6 +366,17 @@ Author: Gabriele Musco
             <style>
               <class name="suggested-action"/>
             </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="applySpinner">
+            <property name="width_request">32</property>
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
           </object>
           <packing>
             <property name="pack_type">end</property>
