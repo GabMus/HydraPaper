@@ -329,7 +329,7 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
         label = Gtk.Label()
         label.set_text(monitor.name)
         image = Gtk.Image()
-        if monitor.wallpaper:
+        if monitor.wallpaper and self.check_if_image(monitor.wallpaper):
             m_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(monitor.wallpaper, 64, 64, True)
             image.set_from_pixbuf(m_pixbuf)
         else:
@@ -393,20 +393,21 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
 
     def fill_wallpapers_flowbox(self): # called by self.refresh_wallpapers_flowbox
         for w in self.wallpapers_list:
-            widget = self.make_wallpapers_flowbox_item(w)
-            if w in self.configuration['favorites']:
-                widget.set_fav(True)
-            else:
-                widget.set_fav(False)
-            self.wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
-            if w in self.configuration['favorites']:
-                widget_c = self.make_wallpapers_flowbox_item(w)
-                widget_c.set_fav(True)
-                self.wallpapers_flowbox_favorites.insert(widget_c, -1)
-                widget_c.show_all()
-                self.wallpapers_flowbox_favorites.show_all()
-            widget.show_all()
-            self.wallpapers_flowbox.show_all()
+            if self.check_if_image(w):
+                widget = self.make_wallpapers_flowbox_item(w)
+                if w in self.configuration['favorites']:
+                    widget.set_fav(True)
+                else:
+                    widget.set_fav(False)
+                self.wallpapers_flowbox.insert(widget, -1) # -1 appends to the end
+                if w in self.configuration['favorites']:
+                    widget_c = self.make_wallpapers_flowbox_item(w)
+                    widget_c.set_fav(True)
+                    self.wallpapers_flowbox_favorites.insert(widget_c, -1)
+                    widget_c.show_all()
+                    self.wallpapers_flowbox_favorites.show_all()
+                widget.show_all()
+                self.wallpapers_flowbox.show_all()
         for wb in self.wallpapers_flowbox_favorites.get_children():
             wb.set_wallpaper_thumb()
         for wb in self.wallpapers_flowbox.get_children():
