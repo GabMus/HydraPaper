@@ -149,7 +149,7 @@ Author: Gabriele Musco
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">add</property>
+            <property name="icon_name">list-add-symbolic</property>
           </object>
         </child>
       </object>
@@ -170,7 +170,7 @@ Author: Gabriele Musco
           <object class="GtkImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="icon_name">remove</property>
+            <property name="icon_name">list-remove-symbolic</property>
           </object>
         </child>
       </object>
@@ -519,7 +519,7 @@ Author: Gabriele Musco
                       <object class="GtkImage">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="icon_name">button_cancel</property>
+                        <property name="icon_name">window-close-symbolic</property>
                       </object>
                     </child>
                   </object>
