@@ -23,6 +23,7 @@
         <release version="1.2" timestamp="1516974888">
             <description>
                 <ul>
+                    <li>Design makeover</li>
                     <li>Added longpress/rightclick menu</li>
                     <li>Implemented favorites</li>
                     <li>Added option to temporarely disable paths</li>

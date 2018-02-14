@@ -23,22 +23,17 @@ def make_label_button_check_row(text, btnlabel, clickedfunction, checkactive, ch
     label.set_margin_left(6)
     label.set_margin_right(12)
     label.set_halign(Gtk.Align.START)
-    btn = Gtk.Button()
-    btn.set_label(btnlabel)
-    btn.value = text
-    btn.connect('clicked', clickedfunction)
-    btn.get_style_context().add_class('destructive-action')
-    check = Gtk.CheckButton()
+    check = Gtk.Switch()
     check.value = text
     check.set_active(checkactive)
-    check.connect('toggled', checkfunction)
-    box.pack_start(check, False, False, 0)
+    check.connect('state-set', checkfunction)
     box.pack_start(label, True, True, 0)
-    box.pack_start(btn, False, False, 0)
+    box.pack_start(check, False, False, 0)
     box.set_margin_top(6)
     box.set_margin_bottom(6)
     row = Gtk.ListBoxRow()
     row.add(box)
+    row.value = text
     return row
 
 def make_row(text):
