@@ -21,9 +21,6 @@ import pathlib
 import json
 
 import argparse
-import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('Wnck', '3.0')
 from gi.repository import Gtk, Wnck, Gdk, Gio, GdkPixbuf
 
 from . import monitor_parser as MonitorParser
