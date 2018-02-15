@@ -31,6 +31,7 @@ from . import wallpaper_merger as WallpaperMerger
 from . import threading_helper as ThreadingHelper
 from . import listbox_helper as ListboxHelper
 from . import wallpaper_flowbox_item as WallpaperFlowboxItem
+from . import wallpapers_folder_listbox_row as WallpapersFolderListBoxRow
 
 import hashlib # for pseudo-random wallpaper name generation
 
@@ -298,7 +299,7 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
         )
 
 
-    def on_wallpaper_folder_checkbox_toggled(self, check, state):
+    def on_wallpaper_folder_switch_toggled(self, check, state):
         if not check.value:
             return
         for index, folder in enumerate(self.configuration['wallpapers_paths']):
@@ -313,12 +314,10 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
         ListboxHelper.empty_listbox(self.wallpapers_folders_popover_listbox)
         for folder in self.configuration['wallpapers_paths']:
             self.wallpapers_folders_popover_listbox.add(
-                ListboxHelper.make_label_button_check_row(
+                WallpapersFolderListBoxRow.WallpapersFolderListBoxRow(
                     folder['path'],
-                    'Remove',
-                    self.remove_wallpaper_folder,
                     folder['active'],
-                    self.on_wallpaper_folder_checkbox_toggled
+                    self.on_wallpaper_folder_switch_toggled
                 )
             )
         self.wallpapers_folders_popover_listbox.show_all()
