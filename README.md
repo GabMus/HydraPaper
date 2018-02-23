@@ -27,7 +27,7 @@ You can find HydraPaper on AUR, as `hydrapaper-git` ([AUR page](https://aur.arch
 
 For every change made to HydraPaper there will be a flatpak. If you want to try out the latest features and don't mind some bugs or crashes here and there, or if you want to help out with development, you can grab the latest development snapshot build using the link below.
 
-**[Get the latest development snapshot](https://gabmus.gitbub.io/HydraPaper)**
+**[Get the latest development snapshot](https://github.com/GabMus/HydraPaper/issues/21)**
 
 #### Uninstalling HydraPaper flatpak
 
