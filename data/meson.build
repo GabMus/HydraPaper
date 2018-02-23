@@ -50,37 +50,37 @@ configure_file(
   install_dir: join_paths(get_option('datadir'), 'dbus-1/services')
 )
 
-# install_data(app_id + '.gschema.xml',
-#   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
-# )
+install_data(app_id + '.gschema.xml',
+  install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
+)
 
-# if false
-# gtk_encode_symbolic = find_program('gtk-encode-symbolic-svg')
-# sizes = ['32x32', '64x64']
-# icon_targets = []
-# foreach size: sizes
-#   icon_targets += custom_target('symbolic-icon-' + size,
-#     input: 'icons/turtle-symbolic.svg',
-#     output: 'turtle-symbolic.symbolic.png',
-#     command: [gtk_encode_symbolic, '--output=' + meson.current_build_dir(), '@INPUT@', size]
-#   )
-# endforeach
-# endif
+if false
+  gtk_encode_symbolic = find_program('gtk-encode-symbolic-svg')
+  sizes = ['32x32', '64x64']
+  icon_targets = []
+  foreach size: sizes
+    icon_targets += custom_target('symbolic-icon-' + size,
+      input: 'icons/org.gabmus.hydrapaper-symbolic.svg',
+      output: 'org.gabmus.hydrapaper-symbolic.png',
+      command: [gtk_encode_symbolic, '--output=' + meson.current_build_dir(), '@INPUT@', size]
+    )
+  endforeach
+endif
 
 icondir = join_paths(get_option('datadir'), 'icons/hicolor')
 install_data('icons/org.gabmus.hydrapaper.svg',
   install_dir: join_paths(icondir, 'scalable/apps')
 )
-# install_data('icons/se.tingping.Trg-symbolic.svg',
-#   install_dir: join_paths(icondir, 'symbolic/apps')
-# )
+install_data('icons/org.gabmus.hydrapaper-symbolic.svg',
+  install_dir: join_paths(icondir, 'symbolic/apps')
+)
 
 hydrapaper_resources = gnome.compile_resources(app_id,
- app_id + '.gresource.xml',
+  app_id + '.gresource.xml',
   gresource_bundle: true,
- # dependencies: desktop_service,
- install: true,
- install_dir: pkgdatadir
+  # dependencies: desktop_service,
+  install: true,
+  install_dir: pkgdatadir
 )
 
 hydrapaper_settings = gnome.compile_schemas()

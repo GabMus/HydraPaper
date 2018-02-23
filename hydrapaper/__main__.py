@@ -51,6 +51,7 @@ IMAGE_EXTENSIONS = [
     '.svg'
 ]
 
+
 class Application(Gtk.Application):
     def __init__(self, **kwargs):
         self.builder = Gtk.Builder.new_from_resource(
@@ -63,7 +64,7 @@ class Application(Gtk.Application):
         )
         self.RESOURCE_PATH = '/org/gabmus/hydrapaper/'
 
-        self.CONFIG_FILE_PATH = G_CONFIG_FILE_PATH # G stands for Global (variable)
+        self.CONFIG_FILE_PATH = G_CONFIG_FILE_PATH  # G stands for Global (variable)
 
         self.configuration = self.get_config_file()
 
@@ -73,6 +74,8 @@ class Application(Gtk.Application):
         # settings.set_property("gtk-application-prefer-dark-theme", True)
 
         self.window = self.builder.get_object('window')
+
+        self.window.set_icon_name('org.gabmus.hydrapaper')
 
         self.window.resize(
             self.configuration['windowsize']['width'],
