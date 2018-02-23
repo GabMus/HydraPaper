@@ -579,8 +579,13 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
         )
 
     def apply_button_async_handler(self, monitors):
+        desktop_environment = os.environ.get('XDG_CURRENT_DESKTOP')
+        if desktop_environment == 'MATE':
+            wp_setter_func = WallpaperMerger.set_wallpaper_mate
+        else:
+            wp_setter_func = WallpaperMerger.set_wallpaper_gnome
         if len(monitors) == 1:
-            WallpaperMerger.set_wallpaper(monitors[0].wallpaper, 'zoom')
+            wp_setter_func(monitors[0].wallpaper, 'zoom')
             return
         #if len(self.monitors) != 2:
         #    print('Configurations different from 2 monitors are not supported for now :(')
@@ -602,7 +607,7 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
                     saved_wp_path
                 )
             )
-        WallpaperMerger.set_wallpaper(saved_wp_path)
+        wp_setter_func(saved_wp_path)
 
     def set_favorite_state(self, wp_path, wp_widget, isfavorite):
         if isfavorite:

@@ -8,7 +8,7 @@ import hashlib # for pseudo-random wallpaper name generation
 
 TMP_DIR='/tmp/HydraPaper/'
 
-def multi_setup_pillow(monitors, save_path):
+def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
     images = list(map(Image.open, [m.wallpaper for m in monitors]))
     resolutions = [(m.width, m.height) for m in monitors]
     widths = [r[0] for r in resolutions]
@@ -22,9 +22,17 @@ def multi_setup_pillow(monitors, save_path):
         final_image.paste(i, o)
     final_image.save(save_path)
 
-def set_wallpaper(path, wp_mode='spanned'):
+def set_wallpaper_gnome(path, wp_mode='spanned'):
     gsettings = Gio.Settings.new('org.gnome.desktop.background')
     wp_key = 'picture-uri'
     mode_key = 'picture-options'
     gsettings.set_string(wp_key, 'file://{}'.format(path))
     gsettings.set_string(mode_key, wp_mode)
+
+def set_wallpaper_mate(path, wp_mode='spanned'):
+    gsettings = Gio.Settings.new('org.mate.background')
+    wp_key = 'picture-filename'
+    mode_key = 'picture-options'
+    gsettings.set_string(wp_key, path)
+    gsettings.set_string(mode_key, wp_mode)
+
