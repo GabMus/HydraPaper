@@ -28,8 +28,8 @@ It requires the following dependencies:
 - Make sure you have flatpak installed in your system ([here is a tutorial on how to install it](https://flatpak.org/getting.html)), and make sure that the version is >= 0.10 (check it using this command: `flatpak --version`)
 - Add the [flathub](https://flathub.org) repository using the following command: `flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo`. This is needed for flatpak to download the GNOME 3.26 Runtime
 - Proceed with one of the following options:
- - [Install from Flathub (recommended)](#from-flathub-recommended)
- - [Install from GitHub release](#from-github-release)
+  - [Install from Flathub (recommended)](#from-flathub-recommended)
+  - [Install from GitHub release](#from-github-release)
 
 #### From Flathub (recommended)
 
