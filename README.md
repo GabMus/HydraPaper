@@ -4,39 +4,62 @@ A Gtk utility to set two different backgrounds for each monitor on GNOME (which 
 
 ![screenshot](screenshot.png)
 
-## Requirements
-
-This tool requires `python-pillow`.
-
 ## Installing
 
-### Installing on Arch Linux/Antergos/Manjaro
+### Requirements
 
-You can find HydraPaper on AUR, as `hydrapaper-git` ([AUR page](https://aur.archlinux.org/packages/hydrapaper-git)).
+HydraPaper officially supports the following desktop environments:
+
+- GNOME 3
+- MATE
+- Budgie
+
+It requires the following dependencies:
+
+- `python3` (>=3.5)
+- `python-pillow`
+- `libwnck3`
+- `gtk`
 
 ### Installing via Flatpak
 
+#### Prerequisites
+
 - Make sure you have flatpak installed in your system ([here is a tutorial on how to install it](https://flatpak.org/getting.html)), and make sure that the version is >= 0.10 (check it using this command: `flatpak --version`)
 - Add the [flathub](https://flathub.org) repository using the following command: `flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo`. This is needed for flatpak to download the GNOME 3.26 Runtime
+- Proceed with one of the following options:
+ - [Install from Flathub (recommended)](#from-flathub-recommended)
+ - [Install from GitHub release](#from-github-release)
+
+#### From Flathub (recommended)
+
+Click the following button install HydraPaper from the Flathub store.
+
+[![Get it on Flathub](misc/getItOnFlathub.svg)](https://beta.flathub.org/apps/details/org.gabmus.hydrapaper)
+
+#### From GitHub release
+
 - Download the latest flatpak release [from the releases page](https://github.com/GabMus/HydraPaper/releases)
-- Install the flatpak file you just downloaded either opening it up with GNOME Software or using one of the following commands:
+- Install the flatpak file you just downloaded either opening it up with GNOME Software, Discover or using one of the following commands:
   - To install HydraPaper systemwide: `flatpak install hydrapaper*.flatpak`
   - To install HydraPaper locally for your user only: `flatpak --user install hydrapaper*.flatpak`
 
 #### Using development builds
 
-For every change made to HydraPaper there will be a flatpak. If you want to try out the latest features and don't mind some bugs or crashes here and there, or if you want to help out with development, you can grab the latest development snapshot build using the link below.
-
-**[Get the latest development snapshot](https://github.com/GabMus/HydraPaper/issues/21)**
+For every notable change made to HydraPaper I will build a flatpak. If you want to try out the latest features and don't mind some bugs or crashes here and there, or if you want to help out with development, you can grab the latest development snapshot build using the following link: **[Get the latest development snapshot](https://github.com/GabMus/HydraPaper/issues/21)**
 
 #### Uninstalling HydraPaper flatpak
 
-You can uninstall HydraPaper from GNOME Software.
+You can uninstall HydraPaper from GNOME Software or Discover.
 
 Alternatively you can run one of these commands:
 
-- If you installed HydraPaper using GNOME Software or systemwide: `flatpak uninstall org.gabmus.hydrapaper`
-- If you installed HydraPaper locally for your user only: `flatpak --user uninstall org.gabmus.hydrapaper`
+- If you installed HydraPaper using GNOME Software or system wide: `flatpak uninstall org.gabmus.hydrapaper`
+- If you installed HydraPaper using Discover or using the `--user` option: `flatpak --user uninstall org.gabmus.hydrapaper`
+
+### Installing on Arch Linux/Antergos/Manjaro
+
+You can find HydraPaper on AUR, as `hydrapaper-git` ([AUR page](https://aur.archlinux.org/packages/hydrapaper-git)).
 
 ### Other distros
 
@@ -71,7 +94,7 @@ ninja install # This will actually install in hydrapaper/builddir/testdir
 ninja run
 ```
 
-### Building for Flatpak
+### Building a Flatpak
 
 First install `flatpak` and `flatpak-builder` from your distro repository. Although it's not necessary, you may also want to install `gnome-software`.
 
@@ -87,7 +110,7 @@ Now you'll be creating a flatpak bundle, so that you can install it and distribu
 
 ### Build and install systemwide directly
 
-This approach is discouraged, since it will manually copy all the files in your system. **Uninstalling could be difficult and/or dangerous**.
+**WARNING**: This approach is discouraged, since it will manually copy all the files in your system. **Uninstalling could be difficult and/or dangerous**.
 
 But if you know what you're doing, here you go:
 
