@@ -10,9 +10,6 @@
         "--socket=wayland",
         "--talk-name=org.gnome.SettingsDaemon",
         "--filesystem=home:ro",
-
-        "--own-name=org.gabmus.hydrapaper",
-
         "--filesystem=xdg-run/dconf",
         "--filesystem=~/.config/dconf:ro",
         "--talk-name=ca.desrt.dconf",
@@ -39,6 +36,11 @@
                         "env": {
                             "MAX_CONCURRENCY": "1"
                         }
+                    },
+                    "arm": {
+                        "env": {
+                            "MAX_CONCURRENCY": "1"
+                        }
                     }
                 }
             },
@@ -56,6 +58,12 @@
                     "type": "archive",
                     "url": "https://github.com/python-pillow/Pillow/archive/5.0.0.tar.gz",
                     "sha256": "e85301adaa827b9f29ab518eff99d5719e572ca5f369866ebfe57a92e7135aec"
+                },
+                {
+                    "type": "shell",
+                    "commands": [
+                        "sed -i 's/if not platform_/if not dirs/' setup.py"
+                    ]
                 }
             ]
         },
