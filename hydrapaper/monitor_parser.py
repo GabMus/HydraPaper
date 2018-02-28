@@ -15,7 +15,13 @@ class Monitor:
         self.wallpaper = None
 
     def __repr__(self):
-        return self.name
+        return '''
+HydraPaper Monitor Object
+- Name: {};
+- Resolution: {} x {};
+- Offset: {} x {};
+- Wallpaper path: {};
+'''.format(self.name, self.width, self.height, self.offset_x, self.offset_y, self.wallpaper)
 
 def build_monitors_from_gdk():
     monitors = []

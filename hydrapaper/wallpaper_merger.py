@@ -9,15 +9,58 @@ import hashlib # for pseudo-random wallpaper name generation
 TMP_DIR='/tmp/HydraPaper/'
 
 def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
+    # detect if setup is vertical or horizontal
+
     images = list(map(Image.open, [m.wallpaper for m in monitors]))
     resolutions = [(m.width, m.height) for m in monitors]
     widths = [r[0] for r in resolutions]
     heights = [r[1] for r in resolutions]
     offsets = [(m.offset_x, m.offset_y) for m in monitors]
+    offsets_x, offsets_y = [o[0] for o in offsets], [o[1] for o in offsets]
+
+    # calculate new wallpaper size
+
+    zero_offset_width = 0
+    zero_offset_height = 0
+    for m in monitors:
+        if m.offset_x == 0:
+            zero_offset_width = m.width
+        if m.offset_y == 0:
+            zero_offset_height = m.height
+#         # DEBUG
+#         print('''
+# ________________________________
+# | Name: {0}
+# | Resolution: {1} x {2}
+# | Offset: {3}, {4}
+# |_______________________________
+# '''.format(m.name, m.width, m.height, m.offset_x, m.offset_y))
+
+    final_image_width = 0
+    for i, offx in enumerate(offsets_x):
+        if offx == max(offsets_x):
+            if offx < zero_offset_width:
+                final_image_width = max(widths)
+                break
+            final_image_width = offx + widths[i]
+            break
+
+    final_image_height = 0
+    for i, offy in enumerate(offsets_y):
+        if offy == max(offsets_y):
+            if offy < zero_offset_height:
+                final_image_height = max(heights)
+                break
+            final_image_height = offy + heights[i]
+            break
+
+#    # DEBUG
+#    print('Final Size: {} x {}'.format(final_image_width, final_image_height))
+
     n_images = []
     for i, r in zip(images, resolutions):
         n_images.append(fit(i, r, method=Image.LANCZOS))
-    final_image = Image.new('RGB', (sum(widths), max(heights)))
+    final_image = Image.new('RGB', (final_image_width, final_image_height))
     for i, o in zip(n_images, offsets):
         final_image.paste(i, o)
     final_image.save(save_path)
@@ -35,4 +78,3 @@ def set_wallpaper_mate(path, wp_mode='spanned'):
     mode_key = 'picture-options'
     gsettings.set_string(wp_key, path)
     gsettings.set_string(mode_key, wp_mode)
-

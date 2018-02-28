@@ -595,7 +595,7 @@ If you\'re still experiencing problems, considering filling an issue <a href="ht
         #    exit(1)
         if not os.path.isdir(HYDRAPAPER_CACHE_PATH):
             os.mkdir(HYDRAPAPER_CACHE_PATH)
-        new_wp_filename = '_'.join(([m.wallpaper for m in monitors]))
+        new_wp_filename = '_'.join(([m.__repr__() for m in monitors]))
         saved_wp_path = '{0}/{1}.png'.format(HYDRAPAPER_CACHE_PATH, hashlib.sha256(
             'HydraPaper{0}'.format(new_wp_filename).encode()
         ).hexdigest())

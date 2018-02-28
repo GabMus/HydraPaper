@@ -20,6 +20,17 @@
     <url type="bugtracker">https://github.com/GabMus/hydrapaper/issues</url>
     <update_contact>emaildigabry@gmail.com</update_contact>
     <releases>
+        <release version="1.2.1" timestamp="1519850213">
+            <description>
+                <ul>
+                    <li>Better filename generation</li>
+                    <li>Added support for vertical setups</li>
+                    <li>Added symbolic icon</li>
+                    <li>Added support for MATE</li>
+                    <li>Various bug fixes</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.2" timestamp="1518618734">
             <description>
                 <ul>
