@@ -26,12 +26,12 @@ def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
     offsets_y = []
     for m in monitors:
         if m.scaling == highest_scaling:
-            resolutions.append((int(m.width/highest_scaling), int(m.height/highest_scaling)))
-            widths.append(int(m.width/highest_scaling))
-            heights.append(int(m.height/highest_scaling))
-            offsets.append((int(m.offset_x/highest_scaling), int(m.offset_y/highest_scaling)))
-            offsets_x.append(int(m.offset_x/highest_scaling))
-            offsets_y.append(int(m.offset_y/highest_scaling))
+            resolutions.append((m.width, m.height))
+            widths.append(m.width)
+            heights.append(m.height)
+            offsets.append((m.offset_x, m.offset_y))
+            offsets_x.append(m.offset_x)
+            offsets_y.append(m.offset_y)
         else:
             resolutions.append((m.width*highest_scaling, m.height*highest_scaling))
             widths.append(m.width*highest_scaling)
