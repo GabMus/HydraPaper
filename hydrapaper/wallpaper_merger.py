@@ -12,11 +12,32 @@ def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
     # detect if setup is vertical or horizontal
 
     images = list(map(Image.open, [m.wallpaper for m in monitors]))
-    resolutions = [(m.width, m.height) for m in monitors]
-    widths = [r[0] for r in resolutions]
-    heights = [r[1] for r in resolutions]
-    offsets = [(m.offset_x, m.offset_y) for m in monitors]
-    offsets_x, offsets_y = [o[0] for o in offsets], [o[1] for o in offsets]
+    highest_scaling = max([m.scaling for m in monitors])
+    # resolutions = [(m.width, m.height) for m in monitors]
+    # widths, heights = [r[0] for r in resolutions], [r[1] for r in resolutions]
+    # offsets = [(m.offset_x, m.offset_y) for m in monitors]
+    # offsets_x, offsets_y = [o[0] for o in offsets], [o[1] for o in offsets]
+
+    resolutions = []
+    widths = []
+    heights = []
+    offsets = []
+    offsets_x = []
+    offsets_y = []
+    for m in monitors:
+        if m.scaling == highest_scaling:
+            resolutions.append((m.width/highest_scaling, m.height/highest_scaling))
+            widths.append(m.width/highest_scaling)
+            heights.append(m.height/highest_scaling)
+            offsets.append((m.offset_x/highest_scaling, m.offset_y/highest_scaling))
+            offsets_x.append(m.offset_x/highest_scaling)
+            offsets_y.append(m.offset_y/highest_scaling)
+        else:
+            resolutions.append((m.width*highest_scaling, m.height*highest_scaling))            widths.append(m.width*highest_scaling)
+            heights.append(m.height*highest_scaling)
+            offsets.append((m.offset_x*highest_scaling, m.offset_y*highest_scaling))
+            offsets_x.append(m.offset_x*highest_scaling)
+            offsets_y.append(m.offset_y*highest_scaling)
 
     # calculate new wallpaper size
 

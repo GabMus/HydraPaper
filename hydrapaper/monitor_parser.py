@@ -4,9 +4,10 @@ from gi.repository import Gdk
 
 class Monitor:
 
-    def __init__(self, width, height, offset_x, offset_y, index, name, primary=False):
+    def __init__(self, width, height, scaling, offset_x, offset_y, index, name, primary=False):
         self.width = int(width)
         self.height = int(height)
+        self.scaling = int(scaling)
         self.primary = primary
         self.offset_x = int(offset_x)
         self.offset_y = int(offset_y)
@@ -19,9 +20,10 @@ class Monitor:
 HydraPaper Monitor Object
 - Name: {};
 - Resolution: {} x {};
+- Scaling: {}
 - Offset: {} x {};
 - Wallpaper path: {};
-'''.format(self.name, self.width, self.height, self.offset_x, self.offset_y, self.wallpaper)
+'''.format(self.name, self.width, self.height, self.scaling, self.offset_x, self.offset_y, self.wallpaper)
 
 def build_monitors_from_gdk():
     monitors = []
@@ -34,6 +36,7 @@ def build_monitors_from_gdk():
             monitors.append(Monitor(
                 monitor_rect.width,
                 monitor_rect.height,
+                monitor.get_scale_factor(),
                 monitor_rect.x,
                 monitor_rect.y,
                 i,
