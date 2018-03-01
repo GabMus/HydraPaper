@@ -35,7 +35,7 @@ It requires the following dependencies:
 
 Click the following button install HydraPaper from the Flathub store.
 
-[![Get it on Flathub](misc/getItOnFlathub.svg)](https://beta.flathub.org/apps/details/org.gabmus.hydrapaper)
+[![Get it on Flathub](https://raw.githubusercontent.com/flatpak-design-team/flathub-mockups/master/assets/download-button/download.svg)](https://beta.flathub.org/apps/details/org.gabmus.hydrapaper)
 
 #### From GitHub release
 
