@@ -1,10 +1,6 @@
 from gi.repository import Gio
-from os.path import isdir
-from os import mkdir
 from PIL import Image
 from PIL.ImageOps import fit
-
-import hashlib # for pseudo-random wallpaper name generation
 
 TMP_DIR='/tmp/HydraPaper/'
 
