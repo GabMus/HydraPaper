@@ -6,64 +6,15 @@ TMP_DIR='/tmp/HydraPaper/'
 
 def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
     images = list(map(Image.open, [m.wallpaper for m in monitors]))
-    highest_scaling = max([m.scaling for m in monitors])
-    # resolutions = [(m.width, m.height) for m in monitors]
-    # widths, heights = [r[0] for r in resolutions], [r[1] for r in resolutions]
-    # offsets = [(m.offset_x, m.offset_y) for m in monitors]
-    # offsets_x, offsets_y = [o[0] for o in offsets], [o[1] for o in offsets]
+    resolutions = [(m.width * m.scaling, m.height * m.scaling) for m in monitors]
+    offsets = [(m.offset_x, m.offset_y) for m in monitors]
 
-    resolutions = []
-    widths = []
-    heights = []
-    offsets = []
-    offsets_x = []
-    offsets_y = []
-    for m in monitors:
-        if m.scaling == highest_scaling:
-            resolutions.append((m.width, m.height))
-            widths.append(m.width)
-            heights.append(m.height)
-            offsets.append((m.offset_x, m.offset_y))
-            offsets_x.append(m.offset_x)
-            offsets_y.append(m.offset_y)
-        else:
-            resolutions.append((m.width*highest_scaling, m.height*highest_scaling))
-            widths.append(m.width*highest_scaling)
-            heights.append(m.height*highest_scaling)
-            offsets.append((m.offset_x*highest_scaling, m.offset_y*highest_scaling))
-            offsets_x.append(m.offset_x*highest_scaling)
-            offsets_y.append(m.offset_y*highest_scaling)
-
-    # calculate new wallpaper size
-
-    zero_offset_width = 0
-    zero_offset_height = 0
-    for m in monitors:
-        if m.offset_x == 0:
-            zero_offset_width = m.width
-        if m.offset_y == 0:
-            zero_offset_height = m.height
-
-    final_image_width = 0
-    for i, offx in enumerate(offsets_x):
-        if offx == max(offsets_x):
-            if offx < zero_offset_width:
-                final_image_width = max(widths)
-                break
-            final_image_width = offx + widths[i]
-            break
     # DEBUG
     # for m in monitors:
     #     print(m)
 
-    final_image_height = 0
-    for i, offy in enumerate(offsets_y):
-        if offy == max(offsets_y):
-            if offy < zero_offset_height:
-                final_image_height = max(heights)
-                break
-            final_image_height = offy + heights[i]
-            break
+    final_image_width = max([m.offset_x + m.width * m.scaling for m in monitors])
+    final_image_height = max([m.offset_y + m.height * m.scaling for m in monitors])
 
     # DEBUG
     # print('Final Size: {} x {}'.format(final_image_width, final_image_height))
