@@ -5,8 +5,6 @@ from PIL.ImageOps import fit
 TMP_DIR='/tmp/HydraPaper/'
 
 def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
-    # detect if setup is vertical or horizontal
-
     images = list(map(Image.open, [m.wallpaper for m in monitors]))
     highest_scaling = max([m.scaling for m in monitors])
     # resolutions = [(m.width, m.height) for m in monitors]
@@ -45,14 +43,6 @@ def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
             zero_offset_width = m.width
         if m.offset_y == 0:
             zero_offset_height = m.height
-#         # DEBUG
-#         print('''
-# ________________________________
-# | Name: {0}
-# | Resolution: {1} x {2}
-# | Offset: {3}, {4}
-# |_______________________________
-# '''.format(m.name, m.width, m.height, m.offset_x, m.offset_y))
 
     final_image_width = 0
     for i, offx in enumerate(offsets_x):
@@ -62,6 +52,9 @@ def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
                 break
             final_image_width = offx + widths[i]
             break
+    # DEBUG
+    # for m in monitors:
+    #     print(m)
 
     final_image_height = 0
     for i, offy in enumerate(offsets_y):
@@ -72,8 +65,8 @@ def multi_setup_pillow(monitors, save_path, wp_setter_func=None):
             final_image_height = offy + heights[i]
             break
 
-#    # DEBUG
-#    print('Final Size: {} x {}'.format(final_image_width, final_image_height))
+    # DEBUG
+    # print('Final Size: {} x {}'.format(final_image_width, final_image_height))
 
     n_images = []
     for i, r in zip(images, resolutions):
