@@ -1,3 +1,9 @@
+# NOTICE! Don't open new issues here!
+
+# Development moved to https://gitlab.com/gabmus/hydrapaper, therefore open new issues there.
+
+---
+
 # HydraPaper
 
 A Gtk utility to set two different backgrounds for each monitor on GNOME (which lacks this feature)
